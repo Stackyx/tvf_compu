@@ -1,4 +1,4 @@
-#include "Exponential.h"
+#include "Exponential.hpp"
 #include "cmath"
 #include <iostream>
 

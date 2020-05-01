@@ -1,4 +1,4 @@
-#include "NormalMultiVariate.h"
+#include "NormalMultiVariate.hpp"
 #include <iostream>
 
 NormalMultiVariate::NormalMultiVariate(UniformGenerator* gen, std::vector<double> mu, std::vector<double> sigma, double corr)

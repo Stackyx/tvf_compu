@@ -3,11 +3,11 @@
 #include <exception>
 #include <chrono>
 
-#include "LinearCongruential.h"
-#include "EcuyerCombined.h"
+#include "LinearCongruential.hpp"
+#include "EcuyerCombined.hpp"
 
-#include "Normal.h"
-#include "NormalMultiVariate.h"
+#include "Normal.hpp"
+#include "NormalMultiVariate.hpp"
 
 int main()
 {

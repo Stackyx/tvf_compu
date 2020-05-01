@@ -1,4 +1,4 @@
-#include "LinearCongruential.h"
+#include "LinearCongruential.hpp"
 #include "iostream"
 
 LinearCongruential::LinearCongruential(llong m, llong i, llong mod, llong seed)

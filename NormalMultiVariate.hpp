@@ -1,7 +1,7 @@
 #pragma once
-#include "ContinuousGenerator.h"
+#include "ContinuousGenerator.hpp"
 #include "uniform_generator.hpp"
-#include "Normal.h"
+#include "Normal.hpp"
 
 class NormalMultiVariate : public ContinuousGenerator
 {
