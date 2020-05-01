@@ -17,18 +17,14 @@
 #include "StocksTerminal.hpp"
 #include "StocksFullPath.hpp"
 
-// #include "Vanilla.hpp"
-// #include "VanillaCall.hpp"
-// #include "VanillaPut.hpp"
-// #include "BasketPayoff.hpp"
-// #include "BasketPut.hpp"
-// #include "BasketCall.hpp"
 #include "Payoff.hpp"
 #include "NonPathDependent.hpp"
 #include "NPDCall.hpp"
 #include "NPDPut.hpp"
 #include "NPDBasketCall.hpp"
 #include "NPDBasketPut.hpp"
+
+#include "MonteCarloEuropean.hpp"
 
 int main()
 {
@@ -75,6 +71,7 @@ int main()
 		}
 
 		std::cout<<"----- Test Payoff ------" << std::endl;
+
 		Payoff* V1 = new NPDPut(100);
 		std::vector<std::vector<double>> Call = (*V1)(S);
 		for (int i = 0; i < S.size(); i++)
@@ -87,23 +84,27 @@ int main()
 		}
 		
 		std::cout<<"----- Test Basket Payoff ------" << std::endl;
+
 		std::vector<double> weights = {0.2, 0.8};
 		Payoff* V2 = new NPDBasketCall(100, weights);
 		std::vector<std::vector<double>> CallBkt = (*V2)(S);
+
 		for (int i = 0; i < S.size(); i++)
 		{
 			std::cout << CallBkt[i][0] << ", ";
 			std::cout << std::endl;
 		}
 
+		std::cout << "----- MONTECARLO ------" << std::endl;
+
+		NonPathDependent* call_payoff = new NPDCall(100);
+		StocksTerminal* stocksT = new StocksTerminal(biv_norm, { 100, 125 }, mu, 1);
+		MonteCarlo* mc_solver = new MonteCarloEuropean(stocksT, call_payoff);
 	}
 	catch (std::exception & e)
 	{
 		std::cout << e.what() << std::endl;
 	}
-	
-
-
 	
 	return 0;
 }
