@@ -13,7 +13,8 @@ public:
 	~RandomGenerator();
 	
 	virtual double Generate() = 0;
-	virtual std::vector<double> Generate(llong n);
+	virtual std::vector<std::vector<double>> Generate(llong n);
+
 	double Mean(llong nbSims);
 	double Var(llong nbSims);
 	void export_csv(llong nbSims, std::string f_name);

@@ -9,9 +9,10 @@ RandomGenerator::~RandomGenerator()
 {
 }
 
-std::vector<double> RandomGenerator::Generate(llong n)
+
+std::vector<std::vector<double>> RandomGenerator::Generate(llong n)
 {
-	throw std::runtime_error("Vector generate not implemented");
+	throw std::runtime_error("Matrix generate not implemented");
 }
 
 double RandomGenerator::Mean(llong nbSims)
