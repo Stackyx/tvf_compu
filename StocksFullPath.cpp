@@ -1,8 +1,8 @@
 #include "StocksFullPath.hpp"
 #include <cmath>
 
-StocksFullPath::StocksFullPath(ContinuousGenerator* gen, const std::vector<double>& s0, const std::vector<double>& mu, double maturity, llong n_steps)
-	: Gen(gen), S0(s0), Mu(mu), T(maturity), N_steps(n_steps)
+StocksFullPath::StocksFullPath(ContinuousGenerator* gen, double s0, double mu, double maturity, llong n_steps)
+	: Stocks(s0, mu, maturity), Gen(gen), N_steps(n_steps)
 {
 
 }
@@ -16,9 +16,9 @@ std::vector<std::vector<std::vector<double>>> StocksFullPath::Generate(llong n_s
 
 	for (llong i = 0; i < n_sims; ++i)
 	{
-		for (llong j=0; j<S0.size();++j)
+		for (llong j=0; j<W[0].size();++j)
 		{
-			S[i][j][0] = std::log(S0[j]);
+			S[i][j][0] = std::log(S0);
 		}
 	}
 
@@ -29,7 +29,7 @@ std::vector<std::vector<std::vector<double>>> StocksFullPath::Generate(llong n_s
 		{
 			for (llong j = 0; j < W[0].size(); j++)
 			{
-				S[i][j][z] = S[i][j][z-1] + (Mu[j] - 1 / 2 * Gen->get_covariance_matrix()[j][j]) * dt + std::sqrt(dt) * W[i][j];
+				S[i][j][z] = S[i][j][z-1] + (Mu - 1 / 2 * Gen->get_covariance_matrix()[j][j]) * dt + std::sqrt(dt) * W[i][j];
 			}
 		}
 	}

@@ -1,8 +1,8 @@
 #include "StocksTerminal.hpp"
 #include <cmath>
 
-StocksTerminal::StocksTerminal(ContinuousGenerator* gen, const std::vector<double>& s0, const std::vector<double>& mu, double maturity)
-	: Gen(gen), S0(s0), Mu(mu), T(maturity)
+StocksTerminal::StocksTerminal(ContinuousGenerator* gen, double s0, double mu, double maturity)
+	: Stocks(s0, mu, maturity), Gen(gen)
 {
 }
 
@@ -15,7 +15,7 @@ std::vector<std::vector<std::vector<double>>> StocksTerminal::Generate(llong n_s
 	{
 		for (llong j = 0; j < W[0].size(); j++)
 		{
-			S[i][j][0] = S0[j] * std::exp((Mu[j] - Gen->get_covariance_matrix()[j][j] / 2) * T + std::sqrt(T) * W[i][j]);
+			S[i][j][0] = S0 * std::exp((Mu - Gen->get_covariance_matrix()[j][j] / 2) * T + std::sqrt(T) * W[i][j]);
 		}
 	}
 

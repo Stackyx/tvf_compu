@@ -8,8 +8,11 @@
 class MonteCarloEuropean : public MonteCarlo
 {
 public:
-	MonteCarloEuropean(StocksTerminal* stocks, Payoff* payoff);
+	MonteCarloEuropean(StocksTerminal* stocks, Payoff* payoff, llong N_sims);
 	void Solve();
 private:
+	StocksTerminal* mc_stocks;
+	Payoff* mc_payoff;
+	llong N_sims;
 };
 
