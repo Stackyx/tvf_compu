@@ -1,4 +1,4 @@
-#include "EcuyerCombined.h"
+#include "EcuyerCombined.hpp"
 #include <iostream>
 
 EcuyerCombined::EcuyerCombined(llong seed1, llong seed2)
