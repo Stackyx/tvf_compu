@@ -15,6 +15,11 @@ std::vector<std::vector<double>> RandomGenerator::Generate(llong n)
 	throw std::runtime_error("Matrix generate not implemented");
 }
 
+std::vector<std::vector<double>> RandomGenerator::get_covariance_matrix()
+{
+	throw std::runtime_error("This Generator does not required any Covariance Matrix.");
+}
+
 double RandomGenerator::Mean(llong nbSims)
 {
 	mean = 0;
