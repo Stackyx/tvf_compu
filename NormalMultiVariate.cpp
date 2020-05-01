@@ -3,7 +3,7 @@
 
 NormalMultiVariate::NormalMultiVariate(UniformGenerator* gen, const std::vector<double>& mu,
 	const std::vector<std::vector<double>>& cov)
-	: Mu(mu), L(cov)
+	: Mu(mu), L(cov), Cov(cov)
 {
 	NormalAlgo type = BoxMuller;
 	norm_gen = new Normal(gen, type, 0, 1);
@@ -24,6 +24,15 @@ NormalMultiVariate::NormalMultiVariate(UniformGenerator* gen, const std::vector<
 		}
 	}
 	for (i = 0; i < L.size(); i++) for (j = 0; j < i; j++) L[j][i] = 0.;
+
+	for (int i = 0; i < L.size(); i++)
+	{
+		for (int j = 0; j < L[i].size(); j++)
+		{
+			std::cout << L[i][j] << ", ";
+		}
+		std::cout << std::endl;
+	}
 }
 
 double NormalMultiVariate::Generate()
@@ -50,10 +59,15 @@ std::vector<std::vector<double>> NormalMultiVariate::Generate(llong n)
 			Y[z][i] = 0;
 			for (llong j = 0; j < s; ++j)
 			{
-				Y[z][i] += L[i][j] * X[i];
+				Y[z][i] += L[i][j] * X[j];
 			}
 		}
 	}
 
 	return Y;
+}
+
+std::vector<std::vector<double>> NormalMultiVariate::get_covariance_matrix()
+{
+	return Cov;
 }
