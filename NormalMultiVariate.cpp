@@ -24,15 +24,6 @@ NormalMultiVariate::NormalMultiVariate(UniformGenerator* gen, const std::vector<
 		}
 	}
 	for (i = 0; i < L.size(); i++) for (j = 0; j < i; j++) L[j][i] = 0.;
-
-	for (int i = 0; i < L.size(); i++)
-	{
-		for (int j = 0; j < L[i].size(); j++)
-		{
-			std::cout << L[i][j] << ", ";
-		}
-		std::cout << std::endl;
-	}
 }
 
 double NormalMultiVariate::Generate()

@@ -33,7 +33,7 @@ int main()
 		ContinuousGenerator* biv_norm = new NormalMultiVariate(ecuyer, mu, cov);
 
 		Stocks* stocks = new StocksTerminal(biv_norm, 100, mu, .5);
-		std::vector<std::vector<std::vector<double>>> S(stocks->Generate(10));
+		std::vector<std::vector<std::vector<double>>> S(stocks->Generate(100));
 
 		for (int i = 0; i < S.size(); i++)
 		{
