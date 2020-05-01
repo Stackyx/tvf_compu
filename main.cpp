@@ -15,6 +15,7 @@
 
 #include "Stocks.hpp"
 #include "StocksTerminal.hpp"
+#include "StocksFullPath.hpp"
 
 // #include "Vanilla.hpp"
 // #include "VanillaCall.hpp"
@@ -37,13 +38,13 @@ int main()
 
 		cov[0][0] = 0.2*0.2;
 		cov[1][1] = 0.3*0.3;
-		cov[0][1] = 0.6*std::sqrt(cov[0][0])*std::sqrt(cov[1][1]);
+		cov[0][1] = -0.6*std::sqrt(cov[0][0])*std::sqrt(cov[1][1]);
 		cov[1][0] = cov[0][1];
 
 		ContinuousGenerator* biv_norm = new NormalMultiVariate(ecuyer, mu, cov);
 
-		Stocks* stocks = new StocksTerminal(biv_norm, 100, mu, .5);
-		std::vector<std::vector<std::vector<double>>> S(stocks->Generate(100));
+		Stocks* stocks = new StocksTerminal(biv_norm, { 100, 125 }, mu, 1);
+		std::vector<std::vector<std::vector<double>>> S(stocks->Generate(5));
 
 		for (int i = 0; i < S.size(); i++)
 		{
@@ -54,6 +55,22 @@ int main()
 			std::cout << std::endl;
 		}
 		
+		std::cout << "----- FULL STOCK PATH -----" << std::endl;
+
+		llong n_steps = 100;
+		Stocks* stocksFull = new StocksFullPath(biv_norm, { 100, 125 }, mu, 1, n_steps);
+
+		std::vector<std::vector<std::vector<double>>> S_full(stocksFull->Generate(5));
+
+		for (int i = 0; i < S_full.size(); i++)
+		{
+			for (int j = 0; j < S_full[i].size(); j++)
+			{
+				std::cout << S_full[i][j][n_steps-1] << ", ";
+			}
+			std::cout << std::endl;
+		}
+
 		std::cout<<"----- Test Payoff ------" << std::endl;
 		// Vanilla* V1 = new VanillaCall(100);
 		// std::cout << (*V1)(110.5) <<", "<< (*V1)(90.5)<<std::endl;
@@ -84,9 +101,6 @@ int main()
 	{
 		std::cout << e.what() << std::endl;
 	}
-	
-
-
 	
 	return 0;
 }
