@@ -1,1 +1,1 @@
-#include "ContinuousGenerator.h"
+#include "ContinuousGenerator.hpp"

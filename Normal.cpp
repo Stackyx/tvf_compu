@@ -1,6 +1,6 @@
 #define _USE_MATH_DEFINES
-#include "Normal.h"
-#include "Exponential.h"
+#include "Normal.hpp"
+#include "Exponential.hpp"
 #include "head_tail.hpp"
 #include <iostream>
 #include <cmath>

@@ -2,7 +2,7 @@
 #define Exponential_HPP
 
 
-#include "ContinuousGenerator.h"
+#include "ContinuousGenerator.hpp"
 #include "uniform_generator.hpp"
 
 enum AlgoType {

@@ -2,7 +2,7 @@
 #define ECUYER_COMBINED_HPP
 
 #include "pseudo_generator.hpp"
-#include "LinearCongruential.h"
+#include "LinearCongruential.hpp"
 
 class EcuyerCombined : public PseudoGenerator
 {

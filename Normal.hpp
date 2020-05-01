@@ -1,6 +1,6 @@
 #ifndef normal_HPP
 #define normal_HPP
-#include "ContinuousGenerator.h"
+#include "ContinuousGenerator.hpp"
 #include "uniform_generator.hpp"
 #include "discrete_generator.hpp"
 
