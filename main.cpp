@@ -16,15 +16,13 @@
 #include "Stocks.hpp"
 #include "StocksTerminal.hpp"
 
-// #include "Vanilla.hpp"
-// #include "VanillaCall.hpp"
-// #include "VanillaPut.hpp"
-// #include "BasketPayoff.hpp"
-// #include "BasketPut.hpp"
-// #include "BasketCall.hpp"
+
 #include "Payoff.hpp"
-#include "NPDCall.hpp"
 #include "NonPathDependent.hpp"
+#include "NPDCall.hpp"
+#include "NPDPut.hpp"
+#include "NPDBasketCall.hpp"
+#include "NPDBasketPut.hpp"
 
 int main()
 {
@@ -43,7 +41,7 @@ int main()
 		ContinuousGenerator* biv_norm = new NormalMultiVariate(ecuyer, mu, cov);
 
 		Stocks* stocks = new StocksTerminal(biv_norm, 100, mu, .5);
-		std::vector<std::vector<std::vector<double>>> S(stocks->Generate(100));
+		std::vector<std::vector<std::vector<double>>> S(stocks->Generate(10));
 
 		for (int i = 0; i < S.size(); i++)
 		{
@@ -55,19 +53,7 @@ int main()
 		}
 		
 		std::cout<<"----- Test Payoff ------" << std::endl;
-		// Vanilla* V1 = new VanillaCall(100);
-		// std::cout << (*V1)(110.5) <<", "<< (*V1)(90.5)<<std::endl;
-		// Vanilla* V2 = new VanillaPut(100);
-		// std::cout << (*V2)(110.5) <<", "<< (*V2)(90.5)<<std::endl;
-		
-		// std::vector<double> weights = {0.5, -0.5, 0.9, 0.1};
-		// std::vector<double> spot1 = {100, 100, 110, 120.1};
-		// std::vector<double> spot2 = {100, 100, 90, 80.1};
-		// BasketPayoff* V3 = new BasketCall(100, weights);
-		// std::cout << (*V3)(spot1) <<", "<< (*V3)(spot2)<<std::endl;
-		// BasketPayoff* V4 = new BasketPut(100, weights);
-		// std::cout << (*V4)(spot1) <<", "<< (*V4)(spot2)<<std::endl;
-		Payoff* V1 = new NPDCall(100);
+		Payoff* V1 = new NPDPut(100);
 		std::vector<std::vector<double>> Call = (*V1)(S);
 		for (int i = 0; i < S.size(); i++)
 		{
@@ -77,7 +63,16 @@ int main()
 			}
 			std::cout << std::endl;
 		}
-
+		
+		std::cout<<"----- Test Basket Payoff ------" << std::endl;
+		std::vector<double> weights = {0.2, 0.8};
+		Payoff* V2 = new NPDBasketCall(100, weights);
+		std::vector<std::vector<double>> CallBkt = (*V2)(S);
+		for (int i = 0; i < S.size(); i++)
+		{
+			std::cout << CallBkt[i][0] << ", ";
+			std::cout << std::endl;
+		}
 
 	}
 	catch (std::exception & e)
