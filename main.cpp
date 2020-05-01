@@ -1,7 +1,11 @@
 #include <iostream>
+#include <algorithm>
+#include <numeric>
 #include <fstream>
 #include <exception>
 #include <chrono>
+#include <vector>
+#include <string>
 
 #include "LinearCongruential.hpp"
 #include "EcuyerCombined.hpp"
@@ -41,6 +45,7 @@ int main()
 	{
 		std::cout << e.what() << std::endl;
 	}
+	
 
 	return 0;
 }
