@@ -1,18 +1,29 @@
 #include "NormalMultiVariate.hpp"
 #include <iostream>
 
-NormalMultiVariate::NormalMultiVariate(UniformGenerator* gen, std::vector<double> mu, std::vector<double> sigma, double corr)
-	: gen(gen), corr(corr), mu(mu), sigma(sigma)
+NormalMultiVariate::NormalMultiVariate(UniformGenerator* gen, const std::vector<double>& mu,
+	const std::vector<std::vector<double>>& cov)
+	: Mu(mu), L(cov)
 {
 	NormalAlgo type = BoxMuller;
 	norm_gen = new Normal(gen, type, 0, 1);
-}
-
-NormalMultiVariate::NormalMultiVariate(UniformGenerator* gen, std::vector<double> mu,
-	std::vector<double> sigma,
-	std::vector<std::vector<double>> corr)
-{
-	throw std::runtime_error("Multivariate not implemented");
+	
+	long i, j, k;
+	std::vector<double> tmp;
+	double sum;
+	
+	for (i = 0; i < L.size(); i++) {
+		for (j = i; j < L.size(); j++) {
+			for (sum = L[i][j], k = i - 1; k >= 0; k--) sum -= L[i][k] * L[j][k];
+			if (i == j) {
+				if (sum <= 0.0)
+					throw("Cholesky failed");
+				L[i][i] = sqrt(sum);
+			}
+			else L[j][i] = sum / L[i][i];
+		}
+	}
+	for (i = 0; i < L.size(); i++) for (j = 0; j < i; j++) L[j][i] = 0.;
 }
 
 double NormalMultiVariate::Generate()
@@ -21,19 +32,28 @@ double NormalMultiVariate::Generate()
 	return 0;
 }
 
-std::vector<double> NormalMultiVariate::Generate(llong n)
+std::vector<std::vector<double>> NormalMultiVariate::Generate(llong n)
 {
-	std::vector<double> r;
-	double x1;
-	for (llong j = 0; j < n; ++j)
+	llong s(L.size());
+	std::vector<double> X(s);
+	std::vector<std::vector<double>> Y(n, std::vector<double>(s));
+
+	for (llong z = 0; z < n; ++z)
 	{
-		for (llong i = 0; i < mu.size(); ++i)
+		for (llong i = 0; i < s; ++i)
 		{
-			x1 = norm_gen->Generate();
-			r.push_back(mu[i] + sigma[i] * x1);
-			r.push_back(mu[i+1] + sigma[i+1]*(corr*x1 + std::sqrt(1-corr*corr)*norm_gen->Generate()));
+			X[i] = norm_gen->Generate();
+		}
+
+		for (llong i = 0; i < s; ++i)
+		{
+			Y[z][i] = 0;
+			for (llong j = 0; j < s; ++j)
+			{
+				Y[z][i] += L[i][j] * X[i];
+			}
 		}
 	}
 
-	return r;
+	return Y;
 }
