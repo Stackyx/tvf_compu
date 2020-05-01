@@ -5,16 +5,14 @@
 class StocksTerminal : public Stocks
 {
 public:
-	StocksTerminal(ContinuousGenerator* gen, double s0, const std::vector<double>& mu, double maturity);
+	StocksTerminal(ContinuousGenerator* gen, const std::vector<double>& s0, const std::vector<double>& mu, double maturity);
 
-	std::vector<double> Generate();
 	std::vector<std::vector<std::vector<double>>> Generate(llong n_sims);
 private:
 
 	ContinuousGenerator* Gen;
 
-	double S0, T;
-
-	const std::vector<double>& Mu;
+	double T;
+	const std::vector<double>& Mu, S0;
 };
 
