@@ -32,17 +32,17 @@ int main()
 	{
 		UniformGenerator* ecuyer = new EcuyerCombined(1, 1);
 
-		std::vector<double> mu = { 3./100., 6./100. };
+		double mu = 3. / 100.;
 		std::vector<std::vector<double>> cov(2, std::vector<double>(2));
 
 		cov[0][0] = 0.2*0.2;
-		cov[1][1] = 0.3*0.3;
+		cov[1][1] = 0.3*0.2;
 		cov[0][1] = 0.6*std::sqrt(cov[0][0])*std::sqrt(cov[1][1]);
 		cov[1][0] = cov[0][1];
 
-		ContinuousGenerator* biv_norm = new NormalMultiVariate(ecuyer, mu, cov);
+		ContinuousGenerator* biv_norm = new NormalMultiVariate(ecuyer, { mu }, cov);
 
-		Stocks* stocks = new StocksTerminal(biv_norm, { 100, 125 }, mu, 1);
+		Stocks* stocks = new StocksTerminal(biv_norm, 100, mu, 1);
 		std::vector<std::vector<std::vector<double>>> S(stocks->Generate(5));
 
 		for (int i = 0; i < S.size(); i++)
@@ -57,7 +57,7 @@ int main()
 		std::cout << "----- FULL STOCK PATH -----" << std::endl;
 
 		llong n_steps = 100;
-		Stocks* stocksFull = new StocksFullPath(biv_norm, { 100, 125 }, mu, 1, n_steps);
+		Stocks* stocksFull = new StocksFullPath(biv_norm, 100, { mu }, 1, n_steps);
 
 		std::vector<std::vector<std::vector<double>>> S_full(stocksFull->Generate(5));
 
@@ -85,8 +85,9 @@ int main()
 		
 		std::cout<<"----- Test Basket Payoff ------" << std::endl;
 
-		std::vector<double> weights = {0.2, 0.8};
+		std::vector<double> weights = {0.5, 0.5};
 		Payoff* V2 = new NPDBasketCall(100, weights);
+
 		std::vector<std::vector<double>> CallBkt = (*V2)(S);
 
 		for (int i = 0; i < S.size(); i++)
@@ -97,9 +98,12 @@ int main()
 
 		std::cout << "----- MONTECARLO ------" << std::endl;
 
-		NonPathDependent* call_payoff = new NPDCall(100);
-		StocksTerminal* stocksT = new StocksTerminal(biv_norm, { 100, 125 }, mu, 1);
-		MonteCarlo* mc_solver = new MonteCarloEuropean(stocksT, call_payoff);
+		NonPathDependent* call_payoff = new NPDBasketCall(100, weights);
+		StocksTerminal* stocksT = new StocksTerminal(biv_norm, 100, { mu }, 1);
+		MonteCarlo* mc_solver = new MonteCarloEuropean(stocksT, call_payoff, 100000);
+
+		mc_solver->Solve();
+		std::cout << "Price = " << mc_solver->get_price() << std::endl;
 	}
 	catch (std::exception & e)
 	{
