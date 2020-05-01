@@ -29,6 +29,7 @@ double BasketCall::operator()(std::vector<double> x)
 	}
 	if (len_weights < x.size())
 	{
+		
 		std::cout<<"WARNING: Please enter "<< len_weights << " Spot prices" << std::endl;
 		std::cout<<"There are "<< x.size()- len_weights <<" more spot than weights" <<std::endl;
 		std::cout<<"Result output is wrong!!!"<< std::endl;

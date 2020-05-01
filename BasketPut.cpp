@@ -38,7 +38,8 @@ double BasketPut::operator()(std::vector<double> x)
 	{
 		std::vector<double> m(len_weights);
 		std::transform( E_weights.begin(), E_weights.end(), x.begin(), m.begin(), std::multiplies<double>());
-		double sum = std::accumulate(m.begin(),m.end(),0.0);
+		double sum = std::accumulate(m.begin(),m.end(),0.0
+		);
 		return (sum < E_strike)? E_strike -sum : 0;
 	}
 }

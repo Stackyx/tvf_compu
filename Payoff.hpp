@@ -10,8 +10,7 @@ public:
 	Payoff();
 	~Payoff();
 	
-	virtual double operator()(std::vector<double> x) = 0;
-	virtual double operator()(double x) = 0;
+	virtual std::vector<std::vector<double>> operator()(std::vector<std::vector<std::vector<double>>> x) = 0;
 };
 
 #endif
