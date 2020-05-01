@@ -99,7 +99,7 @@ int main()
 
 		NonPathDependent* call_payoff = new NPDCall(100);
 		StocksTerminal* stocksT = new StocksTerminal(biv_norm, { 100, 125 }, mu, 1);
-		MonteCarlo* mc_solver = new MonteCarloEuropean(stocksT, Call);
+		MonteCarlo* mc_solver = new MonteCarloEuropean(stocksT, call_payoff);
 	}
 	catch (std::exception & e)
 	{
