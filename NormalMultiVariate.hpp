@@ -1,3 +1,6 @@
+#ifndef NORMAL_MULTI_HPP
+#define NORMAL_MULTI_HPP
+
 #include "ContinuousGenerator.hpp"
 #include "uniform_generator.hpp"
 #include "Normal.hpp"
@@ -15,3 +18,6 @@ private:
 	const std::vector<double>& Mu;
 	std::vector<std::vector<double>> L;
 };
+
+
+#endif
