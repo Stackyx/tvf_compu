@@ -13,6 +13,8 @@
 #include "Normal.hpp"
 #include "NormalMultiVariate.hpp"
 
+#include "StandardAntithetic.hpp"
+
 #include "Stocks.hpp"
 #include "StocksTerminal.hpp"
 #include "StocksFullPath.hpp"
@@ -23,22 +25,26 @@
 #include "NPDBasketPut.hpp"
 
 #include "MonteCarloEuropean.hpp"
+#include "MonteCarloAntithetic.hpp"
 
 int main()
 {
 	try
 	{
 		UniformGenerator* ecuyer = new EcuyerCombined(1, 1);
+		UniformGenerator* ecuyer2 = new EcuyerCombined(1, 1);
 
-		double mu = 3. / 100.;
+		double mu = 0. / 100.;
 		std::vector<std::vector<double>> cov(2, std::vector<double>(2));
 
 		cov[0][0] = 0.2*0.2;
-		cov[1][1] = 0.3*0.2;
-		cov[0][1] = 0.6*std::sqrt(cov[0][0])*std::sqrt(cov[1][1]);
+		cov[1][1] = 0.2*0.2;
+		cov[0][1] = 0.99999*std::sqrt(cov[0][0])*std::sqrt(cov[1][1]);
 		cov[1][0] = cov[0][1];
 
 		ContinuousGenerator* biv_norm = new NormalMultiVariate(ecuyer, { mu }, cov);
+		ContinuousGenerator* biv_norm2 = new NormalMultiVariate(ecuyer2, { mu }, cov);
+
 		std::vector<double> weights = { 0.5, 0.5 };
 
 		std::cout << "----- MONTECARLO ------" << std::endl;
@@ -47,12 +53,18 @@ int main()
 		NonPathDependent* put_payoff = new NPDBasketPut(100, weights);
 
 		StocksTerminal* stocksT = new StocksTerminal(biv_norm, 100, { mu }, 1);
+		StocksTerminal* stocksT2 = new StocksTerminal(biv_norm2, 100, { mu }, 1);
 
-		MonteCarlo* mc_solver = new MonteCarloEuropean(stocksT, put_payoff, 100000);
+		R3R1Function* antithetic_function = new StandardAntithetic();
+
+		MonteCarlo* mc_solver = new MonteCarloEuropean(stocksT, call_payoff, 10000);
+		MonteCarlo* mc_solver_antithetic = new MonteCarloAntithetic(stocksT2, call_payoff, antithetic_function, 10000);
 
 		mc_solver->Solve();
+		mc_solver_antithetic->Solve();
 
 		std::cout << "Price = " << mc_solver->get_price() << std::endl;
+		std::cout << "Price MC Antithetic = " << mc_solver_antithetic->get_price() << std::endl;
 	}
 	catch (std::exception & e)
 	{

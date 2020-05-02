@@ -2,8 +2,13 @@
 #include <algorithm>
 #include <numeric>
 
-MonteCarloEuropean::MonteCarloEuropean(StocksTerminal* stocks, Payoff* payoff, llong n_sims)
-	: mc_stocks(stocks), mc_payoff(payoff), N_sims(n_sims)
+MonteCarloEuropean::MonteCarloEuropean(StocksTerminal* stocks, NonPathDependent* payoff, llong n_sims)
+	: MonteCarlo(stocks, payoff, n_sims)
+{
+}
+
+MonteCarloEuropean::MonteCarloEuropean(StocksFullPath* stocks, PathDependent* payoff, llong n_sims)
+	: MonteCarlo(stocks, payoff, n_sims)
 {
 }
 
