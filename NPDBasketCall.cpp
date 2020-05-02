@@ -33,10 +33,6 @@ std::vector<double> NPDBasketCall::operator()(const std::vector<std::vector<std:
 			}
 			
 			Values[i] = (m > NPD_strike)? m - NPD_strike : 0;
-			
-			// std::vector<double> m(len_weights);
-			// std::transform( NPD_weights.begin(), NPD_weights.end(), x[i].begin(), m.begin(), std::multiplies<double>());
-			// double sum = std::accumulate(m.begin(),m.end(),0.0);
 		}
 
 		return Values;
