@@ -26,7 +26,7 @@ private:
 	double mu;
 	double sigma;
 	NormalAlgo type;
-	double x, y, z;
+	double x, y;
 	bool isGenerated = false;
 };
 

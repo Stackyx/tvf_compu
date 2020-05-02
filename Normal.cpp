@@ -2,6 +2,7 @@
 #include "Normal.hpp"
 #include "Exponential.hpp"
 #include "head_tail.hpp"
+#include "VanDerCorput.hpp"
 #include <iostream>
 #include <cmath>
 
@@ -37,14 +38,13 @@ double Normal::Generate()
 		}
 		else
 		{
-			
-			y = std::sqrt(-2 * std::log(gen->Generate()));
-			z = 2 * M_PI * gen->Generate();
-			x = y * std::sin(z);
+			double r = std::sqrt(-2 * std::log(gen->Generate()));
+			double theta = 2 * M_PI * gen->Generate();
+			x = r * std::cos(theta);
 
 			isGenerated = true;
 
-			return mu + sigma*(y * std::cos(z));
+			return mu + sigma*(r * std::sin(theta));
 		}
 		break;
 	case CLT:

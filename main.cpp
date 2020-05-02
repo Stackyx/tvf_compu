@@ -9,6 +9,7 @@
 
 #include "LinearCongruential.hpp"
 #include "EcuyerCombined.hpp"
+#include "VanDerCorput.hpp"
 
 #include "Normal.hpp"
 #include "NormalMultiVariate.hpp"
@@ -49,13 +50,15 @@ int main()
 
 		std::cout << "----- MONTECARLO ------" << std::endl;
 
+		llong n_simu = 1000;
+
 		NonPathDependent* call_payoff = new NPDBasketCall(100, weights);
 		NonPathDependent* put_payoff = new NPDBasketPut(100, weights);
 
 		auto start = std::chrono::high_resolution_clock::now();
 
 		StocksTerminal* stocksT = new StocksStandardTerminal(biv_norm, 100, { mu }, 1);
-		MonteCarlo* mc_solver = new MonteCarloEuropean(stocksT, call_payoff, 80000);
+		MonteCarlo* mc_solver = new MonteCarloEuropean(stocksT, call_payoff, n_simu);
 
 		mc_solver->Solve();
 		
@@ -68,7 +71,7 @@ int main()
 
 		R3R1Function* antithetic_function = new StandardAntithetic();
 		StocksTerminal* stocksT2 = new StocksAntitheticTerminal(biv_norm2, 100, { mu }, 1, antithetic_function);
-		MonteCarlo* mc_solver_antithetic = new MonteCarloEuropean(stocksT2, call_payoff, 50000);
+		MonteCarlo* mc_solver_antithetic = new MonteCarloEuropean(stocksT2, call_payoff, n_simu);
 
 		mc_solver_antithetic->Solve();
 
@@ -77,8 +80,30 @@ int main()
 		duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 		std::cout << "Time taken = " << duration.count() << "ms" << std::endl;
 
+		NormalAlgo type = BoxMuller;
+
+		UniformGenerator* vdc = new VanDerCorput(1, 13);
+		ContinuousGenerator* norm = new Normal(vdc, type, 0, 1);
+		norm->export_csv(100000, "norm3.csv");
+
+		//ecuyer->export_csv(1000, "ecuyer.csv");
+		ContinuousGenerator* biv_norm3 = new NormalMultiVariate(vdc, { mu }, cov);
+		start = std::chrono::high_resolution_clock::now();
+
+		StocksTerminal* stocksT3 = new StocksStandardTerminal(biv_norm3, 100, { mu }, 1);
+		MonteCarlo* mc_solver_quasi = new MonteCarloEuropean(stocksT3, call_payoff, n_simu);
+
+		mc_solver_quasi->Solve();
+
+		stop = std::chrono::high_resolution_clock::now();
+
+		duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+
+		std::cout << "Time taken = " << duration.count() << "ms" << std::endl;
+
 		std::cout << "Price = " << mc_solver->get_price() << std::endl;
 		std::cout << "Price MC Antithetic = " << mc_solver_antithetic->get_price() << std::endl;
+		std::cout << "Price MC Quasi = " << mc_solver_quasi->get_price() << std::endl;
 	}
 	catch (std::exception & e)
 	{
