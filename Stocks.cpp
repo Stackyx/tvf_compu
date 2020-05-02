@@ -1,14 +1,9 @@
 #include "Stocks.hpp"
 #include <exception>
 
-Stocks::Stocks(double s0, double mu, double maturity)
-	: S0(s0), Mu(mu), T(maturity)
+Stocks::Stocks(ContinuousGenerator* Gen, double s0, double mu, double maturity)
+	: Gen(Gen), S0(s0), Mu(mu), T(maturity)
 {
-}
-
-std::vector<std::vector<std::vector<double>>> Stocks::Generate(llong n_sims, R3R1Function* Transform) const
-{
-	throw std::runtime_error("Not implemented in this class");
 }
 
 double Stocks::get_mu() const

@@ -2,7 +2,7 @@
 #include <cmath>
 
 StocksFullPath::StocksFullPath(ContinuousGenerator* gen, double s0, double mu, double maturity, llong n_steps)
-	: Stocks(s0, mu, maturity), Gen(gen), N_steps(n_steps)
+	: Stocks(gen, s0, mu, maturity), N_steps(n_steps)
 {
 
 }

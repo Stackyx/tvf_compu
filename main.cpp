@@ -15,8 +15,8 @@
 
 #include "StandardAntithetic.hpp"
 
-#include "Stocks.hpp"
-#include "StocksTerminal.hpp"
+#include "StocksAntitheticTerminal.hpp"
+#include "StocksStandardTerminal.hpp"
 #include "StocksFullPath.hpp"
 
 #include "Payoff.hpp"
@@ -25,7 +25,6 @@
 #include "NPDBasketPut.hpp"
 
 #include "MonteCarloEuropean.hpp"
-#include "MonteCarloAntithetic.hpp"
 
 int main()
 {
@@ -49,16 +48,16 @@ int main()
 
 		std::cout << "----- MONTECARLO ------" << std::endl;
 
+		R3R1Function* antithetic_function = new StandardAntithetic();
+
 		NonPathDependent* call_payoff = new NPDBasketCall(100, weights);
 		NonPathDependent* put_payoff = new NPDBasketPut(100, weights);
 
-		StocksTerminal* stocksT = new StocksTerminal(biv_norm, 100, { mu }, 1);
-		StocksTerminal* stocksT2 = new StocksTerminal(biv_norm2, 100, { mu }, 1);
-
-		R3R1Function* antithetic_function = new StandardAntithetic();
+		StocksTerminal* stocksT = new StocksStandardTerminal(biv_norm, 100, { mu }, 1);
+		StocksTerminal* stocksT2 = new StocksAntitheticTerminal(biv_norm2, 100, { mu }, 1, antithetic_function);
 
 		MonteCarlo* mc_solver = new MonteCarloEuropean(stocksT, call_payoff, 10000);
-		MonteCarlo* mc_solver_antithetic = new MonteCarloAntithetic(stocksT2, call_payoff, antithetic_function, 10000);
+		MonteCarlo* mc_solver_antithetic = new MonteCarloEuropean(stocksT2, call_payoff, 10000);
 
 		mc_solver->Solve();
 		mc_solver_antithetic->Solve();
@@ -86,17 +85,6 @@ void test_functions()
 
 	UniformGenerator* ecuyer = new EcuyerCombined(1, 1);
 	ContinuousGenerator* biv_norm = new NormalMultiVariate(ecuyer, { mu }, cov);
-	Stocks* stocks = new StocksTerminal(biv_norm, 100, mu, 1);
-	std::vector<std::vector<std::vector<double>>> S(stocks->Generate(5));
-
-	for (int i = 0; i < S.size(); i++)
-	{
-		for (int j = 0; j < S[i].size(); j++)
-		{
-			std::cout << S[i][j][0] << ", ";
-		}
-		std::cout << std::endl;
-	}
 
 	std::cout << "----- FULL STOCK PATH -----" << std::endl;
 
@@ -116,15 +104,15 @@ void test_functions()
 
 	std::cout << "----- Test Basket Payoff ------" << std::endl;
 
-	std::vector<double> weights = { 0.5, 0.5 };
-	Payoff* V2 = new NPDBasketCall(100, weights);
+	//std::vector<double> weights = { 0.5, 0.5 };
+	//payoff* v2 = new npdbasketcall(100, weights);
 
-	std::vector<double> CallBkt = (*V2)(S);
+	//std::vector<double> callbkt = (*v2)(s);
 
-	for (int i = 0; i < S.size(); i++)
-	{
-		std::cout << CallBkt[i] << ", ";
-		std::cout << std::endl;
-	}
+	//for (int i = 0; i < s.size(); i++)
+	//{
+	//	std::cout << callbkt[i] << ", ";
+	//	std::cout << std::endl;
+	//}
 }
 	
