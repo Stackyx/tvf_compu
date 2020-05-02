@@ -1,6 +1,4 @@
 #include "MonteCarloEuropean.hpp"
-#include <algorithm>
-#include <numeric>
 
 MonteCarloEuropean::MonteCarloEuropean(StocksTerminal* stocks, NonPathDependent* payoff, llong n_sims)
 	: MonteCarlo(stocks, payoff, n_sims)

@@ -27,6 +27,8 @@
 #include "MonteCarloEuropean.hpp"
 #include "MonteCarloAntithetic.hpp"
 
+#include "Tools.hpp"
+
 int main()
 {
 	try
@@ -65,6 +67,7 @@ int main()
 
 		std::cout << "Price = " << mc_solver->get_price() << std::endl;
 		std::cout << "Price MC Antithetic = " << mc_solver_antithetic->get_price() << std::endl;
+		
 	}
 	catch (std::exception & e)
 	{
@@ -126,5 +129,42 @@ void test_functions()
 		std::cout << CallBkt[i] << ", ";
 		std::cout << std::endl;
 	}
+	
+	
+	
+	std::cout<<"----- Test Cholesky --------"<<std::endl;
+	std::vector<std::vector<double>> MAtrix;
+	MAtrix.resize(4, std::vector<double>(4));
+	for(int i = 0; i<4; i++)
+	{
+		for(int j = 0; j<4; j++)
+		{
+			MAtrix[i][j] = -1.0;
+			if (i==j){
+				MAtrix[i][i] = 5.0;
+			}	
+		}
+	}
+
+	std::vector<std::vector<double>> L(MAtrix);
+	Cholesky(L);
+	std::vector<std::vector<double>> Matrix2(MAtrix);
+	inv_sym_defpos(MAtrix, Matrix2);
+	
+	std::vector<std::vector<double>> multi;
+	
+	for(int i = 0; i<4; i++)
+	{
+		std::cout<< Matrix2[i][0] <<", "<<  Matrix2[i][1] <<", "<<  Matrix2[i][2] <<", "<<  Matrix2[i][3] <<std::endl;
+	}
+	
+	mult_matrix(MAtrix, Matrix2, multi);
+	for(int i = 0; i<4; i++)
+	{
+		std::cout<< multi[i][0] <<", "<<  multi[i][1] <<", "<<  multi[i][2] <<", "<<  multi[i][3] <<std::endl;
+	}
+	
+		
+		
 }
 	

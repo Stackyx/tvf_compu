@@ -9,7 +9,7 @@ public:
 	BasisLaguerre(int number);
 	
 	virtual double get_Lk(const double& X);
-	
+	std::vector<std::vector<double>> get_matrix_L(const std::vector<double>& X, const int& k);
 
 };
 

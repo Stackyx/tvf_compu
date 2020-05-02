@@ -3,6 +3,8 @@
 #include "StocksTerminal.hpp"
 #include "PathDependent.hpp"
 #include "NonPathDependent.hpp"
+#include <algorithm>
+#include <numeric>
 
 class MonteCarlo
 {
