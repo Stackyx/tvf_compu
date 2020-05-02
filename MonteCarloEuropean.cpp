@@ -18,7 +18,6 @@ void MonteCarloEuropean::Solve()
 	std::vector<double> V((*mc_payoff)(S));
 
 	price = 0;
-	std::cout << "Size = " << V.size() << std::endl;
 
 	for (llong i = 0; i < V.size(); i++)
 	{
@@ -26,6 +25,4 @@ void MonteCarloEuropean::Solve()
 	}
 
 	price *= std::exp(-mc_stocks->get_mu() * mc_stocks->get_maturity());
-
-	std::cout << "Solving done" << std::endl;
 }

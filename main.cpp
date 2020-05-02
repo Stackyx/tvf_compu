@@ -17,7 +17,8 @@
 
 #include "StocksAntitheticTerminal.hpp"
 #include "StocksStandardTerminal.hpp"
-#include "StocksFullPath.hpp"
+#include "StocksAntitheticFullPath.hpp"
+#include "StocksStandardFullPath.hpp"
 
 #include "Payoff.hpp"
 #include "NonPathDependent.hpp"
@@ -38,7 +39,7 @@ int main()
 
 		cov[0][0] = 0.2*0.2;
 		cov[1][1] = 0.2*0.2;
-		cov[0][1] = 0.99999*std::sqrt(cov[0][0])*std::sqrt(cov[1][1]);
+		cov[0][1] = 0.99999999*std::sqrt(cov[0][0])*std::sqrt(cov[1][1]);
 		cov[1][0] = cov[0][1];
 
 		ContinuousGenerator* biv_norm = new NormalMultiVariate(ecuyer, { mu }, cov);
@@ -48,19 +49,33 @@ int main()
 
 		std::cout << "----- MONTECARLO ------" << std::endl;
 
-		R3R1Function* antithetic_function = new StandardAntithetic();
-
 		NonPathDependent* call_payoff = new NPDBasketCall(100, weights);
 		NonPathDependent* put_payoff = new NPDBasketPut(100, weights);
 
-		StocksTerminal* stocksT = new StocksStandardTerminal(biv_norm, 100, { mu }, 1);
-		StocksTerminal* stocksT2 = new StocksAntitheticTerminal(biv_norm2, 100, { mu }, 1, antithetic_function);
+		auto start = std::chrono::high_resolution_clock::now();
 
-		MonteCarlo* mc_solver = new MonteCarloEuropean(stocksT, call_payoff, 10000);
-		MonteCarlo* mc_solver_antithetic = new MonteCarloEuropean(stocksT2, call_payoff, 10000);
+		StocksTerminal* stocksT = new StocksStandardTerminal(biv_norm, 100, { mu }, 1);
+		MonteCarlo* mc_solver = new MonteCarloEuropean(stocksT, call_payoff, 80000);
 
 		mc_solver->Solve();
+		
+		auto stop = std::chrono::high_resolution_clock::now();
+
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+		std::cout << "Time taken = " << duration.count() << "ms" << std::endl;
+
+		start = std::chrono::high_resolution_clock::now();
+
+		R3R1Function* antithetic_function = new StandardAntithetic();
+		StocksTerminal* stocksT2 = new StocksAntitheticTerminal(biv_norm2, 100, { mu }, 1, antithetic_function);
+		MonteCarlo* mc_solver_antithetic = new MonteCarloEuropean(stocksT2, call_payoff, 50000);
+
 		mc_solver_antithetic->Solve();
+
+		stop = std::chrono::high_resolution_clock::now();
+
+		duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+		std::cout << "Time taken = " << duration.count() << "ms" << std::endl;
 
 		std::cout << "Price = " << mc_solver->get_price() << std::endl;
 		std::cout << "Price MC Antithetic = " << mc_solver_antithetic->get_price() << std::endl;
@@ -89,7 +104,7 @@ void test_functions()
 	std::cout << "----- FULL STOCK PATH -----" << std::endl;
 
 	llong n_steps = 100;
-	Stocks* stocksFull = new StocksFullPath(biv_norm, 100, { mu }, 1, n_steps);
+	Stocks* stocksFull = new StocksStandardFullPath(biv_norm, 100, { mu }, 1, n_steps);
 
 	std::vector<std::vector<std::vector<double>>> S_full(stocksFull->Generate(5));
 
