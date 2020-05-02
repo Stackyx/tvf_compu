@@ -9,8 +9,6 @@ public:
 	std::vector<std::vector<std::vector<double>>> Generate(llong n_sims) const;
 
 private:
-
-	ContinuousGenerator* Gen;
 	llong N_steps;
 };
 

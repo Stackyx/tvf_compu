@@ -22,7 +22,7 @@ void MonteCarloEuropean::Solve()
 
 	for (llong i = 0; i < V.size(); i++)
 	{
-		price += V[i] / N_sims;
+		price += V[i] / V.size();
 	}
 
 	price *= std::exp(-mc_stocks->get_mu() * mc_stocks->get_maturity());
