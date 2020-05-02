@@ -7,7 +7,7 @@ StocksFullPath::StocksFullPath(ContinuousGenerator* gen, double s0, double mu, d
 
 }
 
-std::vector<std::vector<std::vector<double>>> StocksFullPath::Generate(llong n_sims)
+std::vector<std::vector<std::vector<double>>> StocksFullPath::Generate(llong n_sims) const
 {
 	std::vector<std::vector<double>> W(Gen->Generate(n_sims));
 	std::vector<std::vector<std::vector<double>>> S(n_sims, std::vector<std::vector<double>>(W[0].size(), std::vector<double>(N_steps)));

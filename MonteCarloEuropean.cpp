@@ -5,7 +5,6 @@
 MonteCarloEuropean::MonteCarloEuropean(StocksTerminal* stocks, Payoff* payoff, llong n_sims)
 	: mc_stocks(stocks), mc_payoff(payoff), N_sims(n_sims)
 {
-	std::cout << "Constructor done" << std::endl;
 }
 
 void MonteCarloEuropean::Solve()

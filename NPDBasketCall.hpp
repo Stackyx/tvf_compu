@@ -9,7 +9,7 @@ class NPDBasketCall :public NPDBasket
 public:
 	NPDBasketCall(double strike, std::vector<double> weights);
 	
-	virtual std::vector<double> operator()(std::vector<std::vector<std::vector<double>>> x);
+	std::vector<double> operator()(const std::vector<std::vector<std::vector<double>>>& x) const;
 
 };
 

@@ -44,8 +44,11 @@ int main()
 		std::cout << "----- MONTECARLO ------" << std::endl;
 
 		NonPathDependent* call_payoff = new NPDBasketCall(100, weights);
+		NonPathDependent* put_payoff = new NPDBasketPut(100, weights);
+
 		StocksTerminal* stocksT = new StocksTerminal(biv_norm, 100, { mu }, 1);
-		MonteCarlo* mc_solver = new MonteCarloEuropean(stocksT, call_payoff, 100000);
+
+		MonteCarlo* mc_solver = new MonteCarloEuropean(stocksT, put_payoff, 100000);
 
 		mc_solver->Solve();
 

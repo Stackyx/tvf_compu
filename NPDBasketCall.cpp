@@ -8,7 +8,7 @@ NPDBasketCall::NPDBasketCall(double strike, std::vector<double> weights)
 
 }
 
-std::vector<double> NPDBasketCall::operator()(std::vector<std::vector<std::vector<double>>> x)
+std::vector<double> NPDBasketCall::operator()(const std::vector<std::vector<std::vector<double>>>& x) const
 {
 	if (len_weights > x[0].size())
 	{
