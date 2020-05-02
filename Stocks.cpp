@@ -5,12 +5,12 @@ Stocks::Stocks(double s0, double mu, double maturity)
 {
 }
 
-double Stocks::get_mu()
+double Stocks::get_mu() const
 {
 	return Mu;
 }
 
-double Stocks::get_maturity()
+double Stocks::get_maturity() const
 {
 	return T;
 }
