@@ -28,6 +28,8 @@
 
 #include "MonteCarloEuropean.hpp"
 
+#include "Tools.hpp"
+
 int main()
 {
 	try
@@ -144,15 +146,52 @@ void test_functions()
 
 	std::cout << "----- Test Basket Payoff ------" << std::endl;
 
-	//std::vector<double> weights = { 0.5, 0.5 };
-	//payoff* v2 = new npdbasketcall(100, weights);
+	std::vector<double> weights = { 0.5, 0.5 };
+	Payoff* V2 = new NPDBasketCall(100, weights);
 
-	//std::vector<double> callbkt = (*v2)(s);
+	std::vector<double> CallBkt = (*V2)(S);
 
-	//for (int i = 0; i < s.size(); i++)
-	//{
-	//	std::cout << callbkt[i] << ", ";
-	//	std::cout << std::endl;
-	//}
+	for (int i = 0; i < S.size(); i++)
+	{
+		std::cout << CallBkt[i] << ", ";
+		std::cout << std::endl;
+	}
+	
+	
+	
+	std::cout<<"----- Test Cholesky --------"<<std::endl;
+	std::vector<std::vector<double>> MAtrix;
+	MAtrix.resize(4, std::vector<double>(4));
+	for(int i = 0; i<4; i++)
+	{
+		for(int j = 0; j<4; j++)
+		{
+			MAtrix[i][j] = -1.0;
+			if (i==j){
+				MAtrix[i][i] = 5.0;
+			}	
+		}
+	}
+
+	std::vector<std::vector<double>> L(MAtrix);
+	Cholesky(L);
+	std::vector<std::vector<double>> Matrix2(MAtrix);
+	inv_sym_defpos(MAtrix, Matrix2);
+	
+	std::vector<std::vector<double>> multi;
+	
+	for(int i = 0; i<4; i++)
+	{
+		std::cout<< Matrix2[i][0] <<", "<<  Matrix2[i][1] <<", "<<  Matrix2[i][2] <<", "<<  Matrix2[i][3] <<std::endl;
+	}
+	
+	mult_matrix(MAtrix, Matrix2, multi);
+	for(int i = 0; i<4; i++)
+	{
+		std::cout<< multi[i][0] <<", "<<  multi[i][1] <<", "<<  multi[i][2] <<", "<<  multi[i][3] <<std::endl;
+	}
+	
+		
+		
 }
 	
