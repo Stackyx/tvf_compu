@@ -117,7 +117,7 @@ int main()
 		std::cout << "EXPECTATION AND VARIANCE IN FUNCTION OF N_SIMULATION of paths" << std::endl;
 
 		mc_solver_quasi_anti->Solve();
-		MC_simul_quasi_anti->variance_by_sims(200, { 10, 100, 500, 1000, 10000 }, "var_anti.csv");
+		MC_simul_quasi_anti->variance_by_sims(200, { 10, 50, 100, 250, 500, 1000, 2000, 5000, 10000 }, "var_anti.csv");
 
 	}
 	catch (std::exception & e)
