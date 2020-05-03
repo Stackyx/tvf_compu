@@ -11,12 +11,16 @@ class Stocks
 public:
 	Stocks(ContinuousGenerator* Gen, double s0, double mu, double maturity);
 
-	virtual std::vector<std::vector<std::vector<double>>> Generate(llong n_sims) const = 0;
+	virtual std::vector<std::vector<std::vector<double>>> Generate(llong n_sims) = 0;
 
 	double get_mu() const;
 	double get_maturity() const;
 protected:
-	double Mu, S0, T;
 	ContinuousGenerator* Gen;
+
+	double Mu, S0, T;
+
+	std::vector<std::vector<double>> W;
+	std::vector<std::vector<std::vector<double>>> S;
 };
 

@@ -19,3 +19,14 @@ std::vector<std::vector<double>> StandardAntithetic::operator()(const std::vecto
 
 	return Y;
 }
+
+void StandardAntithetic::operator()(std::vector<std::vector<double>>& X_transform, const std::vector<std::vector<double>>& X, double mu, double sigma)
+{
+	for (llong i = 0; i < X_transform.size(); ++i)
+	{
+		for (llong j = 0; j < X_transform[i].size(); ++j)
+		{
+			X_transform[i][j] = 2 * mu - X_transform[i][j];
+		}
+	}
+}

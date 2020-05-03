@@ -6,10 +6,13 @@ StocksStandardFullPath::StocksStandardFullPath(ContinuousGenerator* gen, double 
 {
 }
 
-std::vector<std::vector<std::vector<double>>> StocksStandardFullPath::Generate(llong n_sims) const
+std::vector<std::vector<std::vector<double>>> StocksStandardFullPath::Generate(llong n_sims)
 {
-	std::vector<std::vector<double>> W(Gen->Generate(n_sims));
-	std::vector<std::vector<std::vector<double>>> S(n_sims, std::vector<std::vector<double>>(W[0].size(), std::vector<double>(N_steps)));
+
+	W.resize(n_sims, std::vector<double>(Gen->get_covariance_matrix().size()));
+	S.resize(n_sims, std::vector<std::vector<double>>(W[0].size(), std::vector<double>(N_steps)));
+
+	Gen->Generate(W, n_sims);
 
 	double dt = T / (N_steps - 1);
 

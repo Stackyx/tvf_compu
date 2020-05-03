@@ -6,12 +6,15 @@ StocksAntitheticTerminal::StocksAntitheticTerminal(ContinuousGenerator* gen, dou
 {
 }
 
-std::vector<std::vector<std::vector<double>>> StocksAntitheticTerminal::Generate(llong n_sims) const
+std::vector<std::vector<std::vector<double>>> StocksAntitheticTerminal::Generate(llong n_sims)
 {
-	std::vector<std::vector<double>> W(Gen->Generate(n_sims));
-	std::vector<std::vector<double>> W_transform((*Transform)(W, 0, 1));
+	W.resize(n_sims, std::vector<double>(Gen->get_covariance_matrix().size()));
+	W_transform.resize(n_sims, std::vector<double>(Gen->get_covariance_matrix().size()));
 
-	std::vector<std::vector<std::vector<double>>> S(n_sims * 2, std::vector<std::vector<double>>(W[0].size(), std::vector<double>(1)));
+	Gen->Generate(W, n_sims);
+	(*Transform)(W_transform, W, 0, 1);
+
+	S.resize(n_sims*2, std::vector<std::vector<double>>(W[0].size(), std::vector<double>(1)));
 
 	llong cpt = 0;
 
