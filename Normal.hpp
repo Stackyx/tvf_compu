@@ -16,10 +16,14 @@ class Normal : public ContinuousGenerator
 {
 public:
 	Normal(UniformGenerator* gen, NormalAlgo type, double mu, double sigma);
+	Normal(UniformGenerator* gen, UniformGenerator* gen2, double mu, double sigma);
+
 	double Generate();
 
 private:
-	UniformGenerator* gen;
+	UniformGenerator* gen1;
+	UniformGenerator* gen2;
+
 	DiscreteGenerator* ht_gen;
 	ContinuousGenerator* exp_gen;
 

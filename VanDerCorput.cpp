@@ -9,15 +9,21 @@ VanDerCorput::VanDerCorput(llong seed, llong base)
 
 double VanDerCorput::Generate()
 {
-    double vdc = 0, denom = 1;
-    llong n(s);
+	llong n = s;
+	double q = 0.;
+	double bk = (double)1 / base;
 
-    while (n > 0)
-    {
-        vdc += fmod(n, base) / (denom *= base);
-        n /= base; // note: conversion from 'double' to 'int'
-    }
+	while (n > 0)
+	{
+		q += (n % base) * bk;
+		// std::cout << "modula =  " << n % base << std::endl;
+		// std::cout << "q =  " << q << std::endl;
+		n /= base;
+		// std::cout << "n = " << n << std::endl;
+		bk /= base;
+		// std::cout << "bk = " << bk << std::endl;
+	}
 
-    s += 1;
-    return vdc;
+	s += 1;
+	return q;
 }

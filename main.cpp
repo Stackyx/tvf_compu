@@ -37,7 +37,12 @@ int main()
 		UniformGenerator* ecuyer = new EcuyerCombined(1, 1);
 		UniformGenerator* ecuyer2 = new EcuyerCombined(1, 1);
 
+		UniformGenerator* vdc = new VanDerCorput(1, 2);
+		UniformGenerator* vdc2 = new VanDerCorput(1, 3);
+
 		double mu = 0. / 100.;
+		std::vector<double> weights = { 0.5, 0.5 };
+
 		std::vector<std::vector<double>> cov(2, std::vector<double>(2));
 
 		cov[0][0] = 0.2*0.2;
@@ -45,67 +50,70 @@ int main()
 		cov[0][1] = 0.99999999*std::sqrt(cov[0][0])*std::sqrt(cov[1][1]);
 		cov[1][0] = cov[0][1];
 
-		ContinuousGenerator* biv_norm = new NormalMultiVariate(ecuyer, { mu }, cov);
-		ContinuousGenerator* biv_norm2 = new NormalMultiVariate(ecuyer2, { mu }, cov);
-
-		std::vector<double> weights = { 0.5, 0.5 };
+		ContinuousGenerator* biv_norm = new NormalMultiVariate(ecuyer, 0, cov);
+		ContinuousGenerator* biv_norm2 = new NormalMultiVariate(ecuyer2, 0, cov);
+		ContinuousGenerator* biv_norm3 = new NormalMultiVariate(vdc, vdc2, 0, cov);
 
 		std::cout << "----- MONTECARLO ------" << std::endl;
 
-		llong n_simu = 1000;
+		llong n_simu = 50000;
 
 		NonPathDependent* call_payoff = new NPDBasketCall(100, weights);
 		NonPathDependent* put_payoff = new NPDBasketPut(100, weights);
 
+
+
 		auto start = std::chrono::high_resolution_clock::now();
 
-		StocksTerminal* stocksT = new StocksStandardTerminal(biv_norm, 100, { mu }, 1);
+		StocksTerminal* stocksT = new StocksStandardTerminal(biv_norm, 100, mu, 1);
 		MonteCarlo* mc_solver = new MonteCarloEuropean(stocksT, call_payoff, n_simu);
-
 		mc_solver->Solve();
-		
-		auto stop = std::chrono::high_resolution_clock::now();
 
+		auto stop = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+
 		std::cout << "Time taken = " << duration.count() << "ms" << std::endl;
 
 		start = std::chrono::high_resolution_clock::now();
 
 		R3R1Function* antithetic_function = new StandardAntithetic();
-		StocksTerminal* stocksT2 = new StocksAntitheticTerminal(biv_norm2, 100, { mu }, 1, antithetic_function);
-		MonteCarlo* mc_solver_antithetic = new MonteCarloEuropean(stocksT2, call_payoff, n_simu);
-
+		StocksTerminal* stocksT2 = new StocksAntitheticTerminal(biv_norm2, 100, mu, 1, antithetic_function);
+		MonteCarlo* mc_solver_antithetic = new MonteCarloEuropean(stocksT2, call_payoff, llong(n_simu/2));
 		mc_solver_antithetic->Solve();
 
 		stop = std::chrono::high_resolution_clock::now();
-
 		duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+
 		std::cout << "Time taken = " << duration.count() << "ms" << std::endl;
 
-		NormalAlgo type = BoxMuller;
-
-		UniformGenerator* vdc = new VanDerCorput(1, 13);
-		ContinuousGenerator* norm = new Normal(vdc, type, 0, 1);
-		norm->export_csv(100000, "norm3.csv");
-
-		//ecuyer->export_csv(1000, "ecuyer.csv");
-		ContinuousGenerator* biv_norm3 = new NormalMultiVariate(vdc, { mu }, cov);
 		start = std::chrono::high_resolution_clock::now();
 
-		StocksTerminal* stocksT3 = new StocksStandardTerminal(biv_norm3, 100, { mu }, 1);
+		StocksTerminal* stocksT3 = new StocksStandardTerminal(biv_norm3, 100, mu, 1);
 		MonteCarlo* mc_solver_quasi = new MonteCarloEuropean(stocksT3, call_payoff, n_simu);
-
 		mc_solver_quasi->Solve();
 
 		stop = std::chrono::high_resolution_clock::now();
-
 		duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
 		std::cout << "Time taken = " << duration.count() << "ms" << std::endl;
+
+		start = std::chrono::high_resolution_clock::now();
+
+		StocksTerminal* stocksT4 = new StocksAntitheticTerminal(biv_norm3, 100, mu, 1, antithetic_function);
+		MonteCarlo* mc_solver_quasi_anti = new MonteCarloEuropean(stocksT4, call_payoff, llong(n_simu/2));
+		mc_solver_quasi_anti->Solve();
+
+		stop = std::chrono::high_resolution_clock::now();
+		duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+
+		std::cout << "Time taken = " << duration.count() << "ms" << std::endl;
+
+
 
 		std::cout << "Price = " << mc_solver->get_price() << std::endl;
 		std::cout << "Price MC Antithetic = " << mc_solver_antithetic->get_price() << std::endl;
 		std::cout << "Price MC Quasi = " << mc_solver_quasi->get_price() << std::endl;
+		std::cout << "Price MC Quasi Antithetic = " << mc_solver_quasi->get_price() << std::endl;
 	}
 	catch (std::exception & e)
 	{
@@ -149,13 +157,13 @@ void test_functions()
 	std::vector<double> weights = { 0.5, 0.5 };
 	Payoff* V2 = new NPDBasketCall(100, weights);
 
-	std::vector<double> CallBkt = (*V2)(S);
+	/*std::vector<double> CallBkt = (*V2)(S);
 
 	for (int i = 0; i < S.size(); i++)
 	{
 		std::cout << CallBkt[i] << ", ";
 		std::cout << std::endl;
-	}
+	}*/
 	
 	
 	
