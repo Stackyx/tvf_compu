@@ -96,32 +96,28 @@ int main()
 
 		std::cout << "EXPECTATION AND VARIANCE OF MC" << std::endl;
 
-		MC_simul_standard->compute_expectation(n_sims);
-		MC_simul_standard->compute_variance(n_sims);
+		//MC_simul_standard->compute_expectation(n_sims);
+		//MC_simul_standard->compute_variance(n_sims);
 
-		MC_simul_quasi->compute_expectation(n_sims);
-		MC_simul_quasi->compute_variance(n_sims);
+		//MC_simul_quasi->compute_expectation(n_sims);
+		//MC_simul_quasi->compute_variance(n_sims);
 
-		MC_simul_standard_anti->compute_expectation(n_sims);
-		MC_simul_standard_anti->compute_variance(n_sims);
+		//MC_simul_standard_anti->compute_expectation(n_sims);
+		//MC_simul_standard_anti->compute_variance(n_sims);
 
-		MC_simul_quasi_anti->compute_expectation(n_sims);
-		MC_simul_quasi_anti->compute_variance(n_sims);
+		//MC_simul_quasi_anti->compute_expectation(n_sims);
+		//MC_simul_quasi_anti->compute_variance(n_sims);
 
-		std::cout << "STANDARD :: Expectation = " << MC_simul_standard->get_E() << ", Variance = " << MC_simul_standard->get_V() << std::endl;
-		std::cout << "STANDARD ANTITHETIC :: Expectation = " << MC_simul_standard_anti->get_E() << ", Variance = " << MC_simul_standard_anti->get_V() << std::endl;
+		//std::cout << "STANDARD :: Expectation = " << MC_simul_standard->get_E() << ", Variance = " << MC_simul_standard->get_V() << std::endl;
+		//std::cout << "STANDARD ANTITHETIC :: Expectation = " << MC_simul_standard_anti->get_E() << ", Variance = " << MC_simul_standard_anti->get_V() << std::endl;
 
-		std::cout << "QUASI :: Expectation = " << MC_simul_quasi->get_E() << ", Variance = " << MC_simul_quasi->get_V() << std::endl;
-		std::cout << "QUASI ANTITHETIC :: Expectation = " << MC_simul_quasi_anti->get_E() << ", Variance = " << MC_simul_quasi_anti->get_V() << std::endl;
+		//std::cout << "QUASI :: Expectation = " << MC_simul_quasi->get_E() << ", Variance = " << MC_simul_quasi->get_V() << std::endl;
+		//std::cout << "QUASI ANTITHETIC :: Expectation = " << MC_simul_quasi_anti->get_E() << ", Variance = " << MC_simul_quasi_anti->get_V() << std::endl;
 
 		std::cout << "EXPECTATION AND VARIANCE IN FUNCTION OF N_SIMULATION of paths" << std::endl;
 
-		std::vector<double> V(MC_simul_quasi_anti->variance_by_sims(200, { 10, 100, 1000, 10000 }));
-
-		for (llong i = 0; i < V.size(); ++i)
-		{
-			std::cout << V[i] << ", ";
-		}
+		mc_solver_quasi_anti->Solve();
+		MC_simul_quasi_anti->variance_by_sims(200, { 10, 100, 500, 1000, 10000 }, "var_anti.csv");
 
 	}
 	catch (std::exception & e)
