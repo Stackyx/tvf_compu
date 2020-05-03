@@ -1,29 +1,61 @@
 #include "NormalMultiVariate.hpp"
 #include <iostream>
+#include "Tools.hpp"
 
-NormalMultiVariate::NormalMultiVariate(UniformGenerator* gen, const std::vector<double>& mu,
-	const std::vector<std::vector<double>>& cov)
+NormalMultiVariate::NormalMultiVariate(UniformGenerator* gen, const std::vector<double>& mu, const std::vector<std::vector<double>>& cov)
 	: Mu(mu), L(cov), Cov(cov)
 {
+	if (Mu.size() != Cov.size())
+	{
+		throw std::runtime_error("Size of the Mu vector must coincide with Cov size.");
+	}
+
 	NormalAlgo type = BoxMuller;
 	norm_gen = new Normal(gen, type, 0, 1);
 	
-	long i, j, k;
-	std::vector<double> tmp;
-	double sum;
-	
-	for (i = 0; i < L.size(); i++) {
-		for (j = i; j < L.size(); j++) {
-			for (sum = L[i][j], k = i - 1; k >= 0; k--) sum -= L[i][k] * L[j][k];
-			if (i == j) {
-				if (sum <= 0.0)
-					throw("Cholesky failed");
-				L[i][i] = sqrt(sum);
-			}
-			else L[j][i] = sum / L[i][i];
-		}
+	Cholesky(L);
+}
+
+NormalMultiVariate::NormalMultiVariate(UniformGenerator* gen1, UniformGenerator* gen2, const std::vector<double>& mu, const std::vector<std::vector<double>>& cov)
+	: Mu(mu), L(cov), Cov(cov)
+{
+	if (Mu.size() != Cov.size())
+	{
+		throw std::runtime_error("Size of the Mu vector must coincide with Cov size.");
 	}
-	for (i = 0; i < L.size(); i++) for (j = 0; j < i; j++) L[j][i] = 0.;
+
+	norm_gen = new Normal(gen1, gen2, 0, 1);
+
+	Cholesky(L);
+}
+
+NormalMultiVariate::NormalMultiVariate(UniformGenerator* gen, double mu, const std::vector<std::vector<double>>& cov)
+	: L(cov), Cov(cov)
+{
+	Mu.resize(Cov.size());
+	for (llong i = 0; i < Mu.size(); ++i)
+	{
+		Mu[i] = mu;
+	}
+
+	NormalAlgo type = BoxMuller;
+	norm_gen = new Normal(gen, type, 0, 1);
+
+	Cholesky(L);
+}
+
+NormalMultiVariate::NormalMultiVariate(UniformGenerator* gen1, UniformGenerator* gen2, double mu, const std::vector<std::vector<double>>& cov)
+	: Mu(mu), L(cov), Cov(cov)
+{
+	Mu.resize(Cov.size());
+	for (llong i = 0; i < Mu.size(); ++i)
+	{
+		Mu[i] = mu;
+	}
+
+	norm_gen = new Normal(gen1, gen2, 0, 1);
+
+	Cholesky(L);
 }
 
 double NormalMultiVariate::Generate()
@@ -52,6 +84,7 @@ std::vector<std::vector<double>> NormalMultiVariate::Generate(llong n)
 			{
 				Y[z][i] += L[i][j] * X[j];
 			}
+			Y[z][i] += Mu[i];
 		}
 	}
 
