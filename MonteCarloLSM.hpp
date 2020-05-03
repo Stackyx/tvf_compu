@@ -2,14 +2,21 @@
 #define MONTECARLOLSM_HPP
 
 #include "MonteCarlo.hpp"
+#include "Basis.hpp"
+#include "Tools.hpp"
 
 class MonteCarloLSM : public MonteCarlo
 {
 public:
-	MonteCarloLSM(StocksFullPath* stocks, PathDependent* payoff, llong n_sims);
-
-	// std::vector<std::vector<double>> get_Ti(const std::vector<std::vector<std::vector<double>>>& S, const int& i);
+	MonteCarloLSM(StocksFullPath* stocks, PathDependent* payoff, llong n_sims, Basis* BasisFunction);
+	
 	void Solve();
+	// std::vector<std::vector<double>> A;
+	// std::vector<std::vector<double>> Ainv;
+	// std::vector<double> X;
+private:
+	Basis* LSM_Basis;
+	PathDependent* LSM_payoff;
 };
 
 
