@@ -25,8 +25,11 @@
 #include "NonPathDependent.hpp"
 #include "NPDBasketCall.hpp"
 #include "NPDBasketPut.hpp"
+#include "PathDependent.hpp"
+#include "PDBasketCall.hpp"
 
 #include "MonteCarloEuropean.hpp"
+#include "MonteCarloLSM.hpp"
 
 #include "Simulation.hpp"
 
@@ -62,6 +65,7 @@ int main()
 
 		NonPathDependent* call_payoff = new NPDBasketCall(100, weights);
 		NonPathDependent* put_payoff = new NPDBasketPut(100, weights);
+		PathDependent* call_payoff_PD = new PDBasketCall(100, weights);
 
 		R3R1Function* antithetic_function = new StandardAntithetic();
 
@@ -119,6 +123,76 @@ int main()
 		mc_solver_quasi_anti->Solve();
 		MC_simul_quasi_anti->variance_by_sims(200, { 10, 100, 500, 1000, 10000 }, "var_anti.csv");
 
+		// std::cout<<"----- Test Cholesky --------"<<std::endl;
+		// std::vector<std::vector<double>> Matrix(mc_solverLSM->A);
+		// std::vector<std::vector<double>> Matrix2(mc_solverLSM->Ainv);
+		// std::vector<std::vector<double>> L(BLG->get_matrix_L(mc_solverLSM->X));
+
+		
+		// for(int i = 0; i<L.size(); i++)
+		// {
+			// for (int j=0; j<L[0].size();j++)
+			// {
+				// std::cout<< L[i][j] <<", ";
+			// }
+			// std::cout<<std::endl;
+		// }
+		// std::cout<<(mc_solverLSM->X)[0]<<std::endl;
+
+		// inv_sym_defpos(Matrix, Matrix2);
+		// inv_sym_defpos(Matrix, Matrix2);
+		// std::vector<std::vector<double>> Multi;
+		// mult_matrix(Matrix, Matrix2, Multi);
+		
+		// for(int i = 0; i<Matrix.size(); i++)
+		// {
+			// for (int j=0; j<Matrix[0].size();j++)
+			// {
+				// std::cout<< Matrix[i][j] <<", ";
+			// }
+			// std::cout<<std::endl;
+		// }
+		
+		// for(int i = 0; i<Matrix2.size(); i++)
+		// {
+			// for (int j=0; j<Matrix2[0].size();j++)
+			// {
+				// std::cout<< Matrix2[i][j] <<", ";
+			// }
+			// std::cout<<std::endl;
+		// }
+
+
+		// std::vector<std::vector<double>> MAtrix;
+		// MAtrix.resize(4, std::vector<double>(4));
+		// for(int i = 0; i<4; i++)
+		// {
+			// for(int j = 0; j<4; j++)
+			// {
+				// MAtrix[i][j] = -1.0;
+				// if (i==j){
+					// MAtrix[i][i] = 5.0;
+				// }	
+			// }
+		// }
+
+		// std::vector<std::vector<double>> L(MAtrix);
+		// Cholesky(L);
+		// std::vector<std::vector<double>> Matrix22(MAtrix);
+		// inv_sym_defpos(MAtrix, Matrix22);
+		
+		// std::vector<std::vector<double>> multi;
+		
+		// for(int i = 0; i<4; i++)
+		// {
+			// std::cout<< Matrix22[i][0] <<", "<<  Matrix22[i][1] <<", "<<  Matrix22[i][2] <<", "<<  Matrix22[i][3] <<std::endl;
+		// }
+		
+		// mult_matrix(MAtrix, Matrix22, multi);
+		// for(int i = 0; i<4; i++)
+		// {
+			// std::cout<< multi[i][0] <<", "<<  multi[i][1] <<", "<<  multi[i][2] <<", "<<  multi[i][3] <<std::endl;
+		// }
 	}
 	catch (std::exception & e)
 	{

@@ -23,6 +23,27 @@ void mult_matrix(const std::vector<std::vector<double>>& M1, const std::vector<s
 	
 }
 
+void mult_matrix_vect(const std::vector<std::vector<double>>& M1, const std::vector<double>& V1, std::vector<double>& V2)
+{
+	if (M1[0].size() != V1.size())
+	{
+		throw std::runtime_error("You try to multiply a matrix and vector with size not matching.");
+	}
+	
+	V2.resize(M1.size()); 
+	
+	for (int i=0; i<M1.size();i++)
+	{
+		for(int j=0; j< M1[0].size();j++)
+		{
+				V2[i] += M1[i][j] * V1[j];
+		}
+		
+		
+	}
+	
+}
+
 void transpose_matrix(const std::vector<std::vector<double>>& M1, std::vector<std::vector<double>>& M2)
 {
 	M2.resize(M1[0].size(), std::vector<double>(M1.size()));
@@ -39,7 +60,6 @@ void transpose_matrix(const std::vector<std::vector<double>>& M1, std::vector<st
 void Cholesky(std::vector<std::vector<double>>& A)
 {
 	long i, j, k;
-	std::vector<double> tmp;
 	double sum;
 	
 	if (A[0].size() != A.size()) throw("need square matrix");
@@ -68,7 +88,6 @@ void Cholesky(std::vector<std::vector<double>>& A)
 void inv_sym_defpos(const std::vector<std::vector<double>>& A, std::vector<std::vector<double>>& Ainv)
 {
 	long i, j, k;
-	std::vector<double> tmp;
 	double sum;
 	
 	std::vector<std::vector<double>> A_copy(A);
@@ -98,6 +117,14 @@ void inv_sym_defpos(const std::vector<std::vector<double>>& A, std::vector<std::
 	}
 
 
+}
+
+int factorial(int n)
+{
+    if(n > 1)
+        return n * factorial(n - 1);
+    else
+        return 1;
 }
 
 
