@@ -6,8 +6,9 @@
 class UniformGenerator : public RandomGenerator
 {
 public:
-		UniformGenerator();
-		~UniformGenerator();
+	UniformGenerator(llong seed);
+protected:
+	llong s;
 };
 
 #endif

@@ -54,7 +54,6 @@ NormalMultiVariate::NormalMultiVariate(UniformGenerator* gen1, UniformGenerator*
 	}
 
 	norm_gen = new Normal(gen1, gen2, 0, 1);
-
 	Cholesky(L);
 }
 

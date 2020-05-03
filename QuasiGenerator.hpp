@@ -4,8 +4,6 @@ class QuasiGenerator : public UniformGenerator
 {
 public:
 	QuasiGenerator(llong seed);
-protected:
-	llong s;
 
 };
 

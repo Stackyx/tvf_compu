@@ -31,6 +31,8 @@
 #include "MonteCarloEuropean.hpp"
 #include "MonteCarloLSM.hpp"
 
+#include "BasisLaguerre.hpp"
+
 #include "Simulation.hpp"
 
 #include "Tools.hpp"
@@ -45,14 +47,14 @@ int main()
 		UniformGenerator* vdc = new VanDerCorput(1, 2);
 		UniformGenerator* vdc2 = new VanDerCorput(1, 3);
 
-		double mu = 3./ 100.;
+		double mu = 0./ 100.;
 		std::vector<double> weights = { 0.5, 0.5 };
 
 		std::vector<std::vector<double>> cov(2, std::vector<double>(2));
 
-		cov[0][0] = 0.3*0.3;
+		cov[0][0] = 0.2*0.2;
 		cov[1][1] = 0.2*0.2;
-		cov[0][1] = 0.6*std::sqrt(cov[0][0])*std::sqrt(cov[1][1]);
+		cov[0][1] = 0.99999*std::sqrt(cov[0][0])*std::sqrt(cov[1][1]);
 		cov[1][0] = cov[0][1];
 
 		ContinuousGenerator* biv_norm = new NormalMultiVariate(ecuyer, 0, cov);
@@ -118,81 +120,30 @@ int main()
 		//std::cout << "QUASI :: Expectation = " << MC_simul_quasi->get_E() << ", Variance = " << MC_simul_quasi->get_V() << std::endl;
 		//std::cout << "QUASI ANTITHETIC :: Expectation = " << MC_simul_quasi_anti->get_E() << ", Variance = " << MC_simul_quasi_anti->get_V() << std::endl;
 
+		UniformGenerator* vdc3 = new VanDerCorput(1, 2);
+		UniformGenerator* vdc4 = new VanDerCorput(1, 3);
+		UniformGenerator* ecuyer3 = new EcuyerCombined(1, 1);
+
+		ContinuousGenerator* quasi_norm = new NormalMultiVariate(vdc3, vdc4, 0, cov);
+		ContinuousGenerator* norm = new NormalMultiVariate(ecuyer3, 0, cov);
+
+		Basis* BLG = new BasisLaguerre(3);
+		StocksFullPath* stocksFP = new StocksStandardFullPath(quasi_norm, 100, mu , 1, 100);
+
+		MonteCarloLSM* mc_solverLSM = new MonteCarloLSM(stocksFP, call_payoff_PD, n_simu, BLG);
+		MonteCarlo* mc_solver_std = new MonteCarloEuropean(stocksFP, call_payoff_PD, n_simu);
+
+		//mc_solverLSM->Solve();
+
+		mc_solver_std->Solve();
+
+		//std::cout << "Price = " << mc_solverLSM->get_price() << std::endl;
+		std::cout << "Price = " << mc_solver_std->get_price() << std::endl;
+
 		std::cout << "EXPECTATION AND VARIANCE IN FUNCTION OF N_SIMULATION of paths" << std::endl;
 
-		mc_solver_quasi_anti->Solve();
-		MC_simul_quasi_anti->variance_by_sims(200, { 10, 50, 100, 250, 500, 1000, 2000, 5000, 10000 }, "var_anti.csv");
-
-		// std::cout<<"----- Test Cholesky --------"<<std::endl;
-		// std::vector<std::vector<double>> Matrix(mc_solverLSM->A);
-		// std::vector<std::vector<double>> Matrix2(mc_solverLSM->Ainv);
-		// std::vector<std::vector<double>> L(BLG->get_matrix_L(mc_solverLSM->X));
-
-		
-		// for(int i = 0; i<L.size(); i++)
-		// {
-			// for (int j=0; j<L[0].size();j++)
-			// {
-				// std::cout<< L[i][j] <<", ";
-			// }
-			// std::cout<<std::endl;
-		// }
-		// std::cout<<(mc_solverLSM->X)[0]<<std::endl;
-
-		// inv_sym_defpos(Matrix, Matrix2);
-		// inv_sym_defpos(Matrix, Matrix2);
-		// std::vector<std::vector<double>> Multi;
-		// mult_matrix(Matrix, Matrix2, Multi);
-		
-		// for(int i = 0; i<Matrix.size(); i++)
-		// {
-			// for (int j=0; j<Matrix[0].size();j++)
-			// {
-				// std::cout<< Matrix[i][j] <<", ";
-			// }
-			// std::cout<<std::endl;
-		// }
-		
-		// for(int i = 0; i<Matrix2.size(); i++)
-		// {
-			// for (int j=0; j<Matrix2[0].size();j++)
-			// {
-				// std::cout<< Matrix2[i][j] <<", ";
-			// }
-			// std::cout<<std::endl;
-		// }
-
-
-		// std::vector<std::vector<double>> MAtrix;
-		// MAtrix.resize(4, std::vector<double>(4));
-		// for(int i = 0; i<4; i++)
-		// {
-			// for(int j = 0; j<4; j++)
-			// {
-				// MAtrix[i][j] = -1.0;
-				// if (i==j){
-					// MAtrix[i][i] = 5.0;
-				// }	
-			// }
-		// }
-
-		// std::vector<std::vector<double>> L(MAtrix);
-		// Cholesky(L);
-		// std::vector<std::vector<double>> Matrix22(MAtrix);
-		// inv_sym_defpos(MAtrix, Matrix22);
-		
-		// std::vector<std::vector<double>> multi;
-		
-		// for(int i = 0; i<4; i++)
-		// {
-			// std::cout<< Matrix22[i][0] <<", "<<  Matrix22[i][1] <<", "<<  Matrix22[i][2] <<", "<<  Matrix22[i][3] <<std::endl;
-		// }
-		
-		// mult_matrix(MAtrix, Matrix22, multi);
-		// for(int i = 0; i<4; i++)
-		// {
-			// std::cout<< multi[i][0] <<", "<<  multi[i][1] <<", "<<  multi[i][2] <<", "<<  multi[i][3] <<std::endl;
-		// }
+		/*mc_solver_quasi_anti->Solve();
+		MC_simul_quasi_anti->variance_by_sims(200, { 10, 50, 100, 250, 500, 1000, 2000, 5000, 10000 }, "var_anti.csv");*/
 	}
 	catch (std::exception & e)
 	{
@@ -278,7 +229,5 @@ void test_functions()
 		std::cout<< multi[i][0] <<", "<<  multi[i][1] <<", "<<  multi[i][2] <<", "<<  multi[i][3] <<std::endl;
 	}
 	
-		
-		
 }
 	

@@ -27,7 +27,7 @@ Normal::Normal(UniformGenerator* gen, NormalAlgo type, double mu, double sigma)
 }
 
 Normal::Normal(UniformGenerator* gen, UniformGenerator* gen2, double mu, double sigma)
-	: mu(mu), sigma(std::sqrt(sigma)), gen1(gen), gen2(gen2)
+	: mu(mu), sigma(std::sqrt(sigma)), gen1(gen), gen2(gen2), type(BoxMuller)
 {
 }
 

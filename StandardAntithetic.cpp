@@ -26,7 +26,7 @@ void StandardAntithetic::operator()(std::vector<std::vector<double>>& X_transfor
 	{
 		for (llong j = 0; j < X_transform[i].size(); ++j)
 		{
-			X_transform[i][j] = 2 * mu - X_transform[i][j];
+			X_transform[i][j] = 2 * mu - X[i][j];
 		}
 	}
 }

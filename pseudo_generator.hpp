@@ -6,9 +6,7 @@
 class PseudoGenerator : public UniformGenerator
 {
 public:
-	PseudoGenerator();
 	PseudoGenerator(llong s);
-	~PseudoGenerator();
 
 protected:
 	llong seed;

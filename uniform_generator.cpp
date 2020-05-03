@@ -1,9 +1,6 @@
 #include "uniform_generator.hpp"
 
-UniformGenerator::UniformGenerator()
-{
-}
-
-UniformGenerator::~UniformGenerator()
+UniformGenerator::UniformGenerator(llong seed)
+	: s(seed)
 {
 }
