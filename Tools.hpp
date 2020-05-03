@@ -14,4 +14,8 @@ void Cholesky(std::vector<std::vector<double>>& A);
 void inv_sym_defpos(const std::vector<std::vector<double>>& A, std::vector<std::vector<double>>& Ainv);
 int factorial(int n);
 
+void inverse(const std::vector<std::vector<double>>& A ,std::vector<std::vector<double>>& D,double det);
+void cofactor(const std::vector<std::vector<double>>& A ,std::vector<std::vector<double>>& D,double deter);
+double det(const std::vector<std::vector<double>>& A );
+void minor(std::vector<std::vector<double>>& B,const std::vector<std::vector<double>>& A,int i);
 #endif

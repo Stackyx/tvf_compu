@@ -45,7 +45,7 @@ std::vector<std::vector<std::vector<double>>> StocksStandardFullPath::Generate(l
 				S[i][j][z] = std::exp(S[i][j][z]);
 				if (z == N_steps - 1)
 				{
-					std::cout << S[i][j][z] << std::endl;
+					//std::cout << S[i][j][z] << std::endl;
 				}
 			}
 		}
