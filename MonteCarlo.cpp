@@ -9,3 +9,8 @@ double MonteCarlo::get_price() const
 {
 	return price;
 }
+
+void MonteCarlo::set_N_sims(llong n_sims)
+{
+	N_sims = n_sims;
+}
