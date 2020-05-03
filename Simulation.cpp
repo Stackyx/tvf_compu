@@ -60,7 +60,7 @@ std::vector<double> Simulation::variance_by_sims(llong var_simul, std::vector<do
 
 	for (llong i = 0; i < mc_simul.size(); ++i)
 	{
-		isVarianceComputed = false;
+		isExpectationComputed = false;
 		MC_model->set_N_sims(mc_simul[i]);
 		compute_variance(var_simul);
 		V_arr[i] = V;
@@ -91,10 +91,10 @@ void Simulation::variance_by_sims(llong var_simul, std::vector<double> mc_simul,
 
 	for (llong i = 0; i < mc_simul.size(); ++i)
 	{
-		isVarianceComputed = false;
+		isExpectationComputed = false;
 		MC_model->set_N_sims(mc_simul[i]);
 		compute_variance(var_simul);
-		f << mc_simul[i] << "," << E << "\n";
+		f << mc_simul[i] << "," << V << "\n";
 	}
 
 	f.close();
