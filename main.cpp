@@ -54,7 +54,7 @@ int main()
 
 		cov[0][0] = 0.2*0.2;
 		cov[1][1] = 0.2*0.2;
-		cov[0][1] = 0.99999*std::sqrt(cov[0][0])*std::sqrt(cov[1][1]);
+		cov[0][1] = 0.999999*std::sqrt(cov[0][0])*std::sqrt(cov[1][1]);
 		cov[1][0] = cov[0][1];
 
 		ContinuousGenerator* biv_norm = new NormalMultiVariate(ecuyer, 0, cov);
@@ -127,23 +127,32 @@ int main()
 		ContinuousGenerator* quasi_norm = new NormalMultiVariate(vdc3, vdc4, 0, cov);
 		ContinuousGenerator* norm = new NormalMultiVariate(ecuyer3, 0, cov);
 
-		Basis* BLG = new BasisLaguerre(3);
-		StocksFullPath* stocksFP = new StocksStandardFullPath(quasi_norm, 100, mu , 1, 100);
+		Basis* BLG = new BasisLaguerre(5);
+		StocksFullPath* stocksFP = new StocksStandardFullPath(norm, 100, mu , 1, 100);
 
 		MonteCarloLSM* mc_solverLSM = new MonteCarloLSM(stocksFP, call_payoff_PD, n_simu, BLG);
 		MonteCarlo* mc_solver_std = new MonteCarloEuropean(stocksFP, call_payoff_PD, n_simu);
 
-		//mc_solverLSM->Solve();
-
+		mc_solverLSM->Solve();
 		mc_solver_std->Solve();
 
-		//std::cout << "Price = " << mc_solverLSM->get_price() << std::endl;
+		std::cout << "Price = " << mc_solverLSM->get_price() << std::endl;
 		std::cout << "Price = " << mc_solver_std->get_price() << std::endl;
 
 		std::cout << "EXPECTATION AND VARIANCE IN FUNCTION OF N_SIMULATION of paths" << std::endl;
 
+
+		// std::vector<std::vector<double>> L(LSM_Basis->get_matrix_L(mc_solverLSM->X));
+		// std::vector<std::vector<double>> M1;
+		// std::vector<std::vector<double>> Minv;
+		
+		
+		
+		
 		/*mc_solver_quasi_anti->Solve();
 		MC_simul_quasi_anti->variance_by_sims(200, { 10, 50, 100, 250, 500, 1000, 2000, 5000, 10000 }, "var_anti.csv");*/
+		
+		
 	}
 	catch (std::exception & e)
 	{
@@ -228,6 +237,16 @@ void test_functions()
 	{
 		std::cout<< multi[i][0] <<", "<<  multi[i][1] <<", "<<  multi[i][2] <<", "<<  multi[i][3] <<std::endl;
 	}
+	
+	// for (int ii =0; ii<C.size();++ii)
+	// {
+		// for(int jj = 0; jj<C[0].size(); ++jj)
+		// {
+			// std::cout<< std::setprecision(10)<<C[ii][jj]<<std::setprecision(prec)<<", ";
+		// }
+		// std::cout<< "       "<< std::setprecision(20) << (X)[ii]<<std::setprecision(prec) <<std::endl;
+		// std::cout<<std::endl;
+	// }
 	
 }
 	
