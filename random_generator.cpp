@@ -15,6 +15,11 @@ std::vector<std::vector<double>> RandomGenerator::Generate(llong n)
 	throw std::runtime_error("Matrix generate not implemented");
 }
 
+void RandomGenerator::Generate(std::vector<std::vector<double>>& W, llong n)
+{
+	throw std::runtime_error("Not implemented in this class");
+}
+
 std::vector<std::vector<double>> RandomGenerator::get_covariance_matrix()
 {
 	throw std::runtime_error("This Generator does not required any Covariance Matrix.");

@@ -91,6 +91,30 @@ std::vector<std::vector<double>> NormalMultiVariate::Generate(llong n)
 	return Y;
 }
 
+void NormalMultiVariate::Generate(std::vector<std::vector<double>>& W, llong n)
+{
+	llong s(L.size());
+	std::vector<double> X(s);
+
+	for (llong z = 0; z < n; ++z)
+	{
+		for (llong i = 0; i < s; ++i)
+		{
+			X[i] = norm_gen->Generate();
+		}
+
+		for (llong i = 0; i < s; ++i)
+		{
+			W[z][i] = 0;
+			for (llong j = 0; j < s; ++j)
+			{
+				W[z][i] += L[i][j] * X[j];
+			}
+			W[z][i] += Mu[i];
+		}
+	}
+}
+
 std::vector<std::vector<double>> NormalMultiVariate::get_covariance_matrix()
 {
 	return Cov;

@@ -8,10 +8,12 @@ StocksStandardTerminal::StocksStandardTerminal(ContinuousGenerator* gen, double 
 {
 }
 
-std::vector<std::vector<std::vector<double>>> StocksStandardTerminal::Generate(llong n_sims) const
+std::vector<std::vector<std::vector<double>>> StocksStandardTerminal::Generate(llong n_sims)
 {
-	std::vector<std::vector<double>> W(Gen->Generate(n_sims));
-	std::vector<std::vector<std::vector<double>>> S(n_sims, std::vector<std::vector<double>>(W[0].size(), std::vector<double>(1)));
+	W.resize(n_sims, std::vector<double>(Gen->get_covariance_matrix().size()));
+	S.resize(n_sims, std::vector<std::vector<double>>(W[0].size(), std::vector<double>(1)));
+
+	Gen->Generate(W, n_sims);
 
 	for (llong i = 0; i < n_sims; ++i)
 	{

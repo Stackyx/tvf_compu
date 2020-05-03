@@ -16,6 +16,8 @@ public:
 	double Generate();
 
 	std::vector<std::vector<double>> Generate(llong n);
+	void Generate(std::vector<std::vector<double>>& W, llong n);
+
 	std::vector<std::vector<double>> get_covariance_matrix();
 
 private:

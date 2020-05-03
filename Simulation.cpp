@@ -1,4 +1,5 @@
 #include "Simulation.hpp"
+#include <fstream>
 
 Simulation::Simulation(MonteCarlo* mc_model)
 	: MC_model(mc_model)
@@ -66,6 +67,38 @@ std::vector<double> Simulation::variance_by_sims(llong var_simul, std::vector<do
 	}
 
 	return V_arr;
+}
+
+void Simulation::expectation_by_sims(llong exp_simul, std::vector<double> mc_simul, std::string fname)
+{
+	std::ofstream f;
+	f.open(fname);
+
+	for (llong i = 0; i < mc_simul.size(); ++i)
+	{
+		MC_model->set_N_sims(mc_simul[i]);
+		compute_expectation(exp_simul);
+		f << mc_simul[i] << "," << E << "\n";
+	}
+
+	f.close();
+}
+
+void Simulation::variance_by_sims(llong var_simul, std::vector<double> mc_simul, std::string fname)
+{
+	std::ofstream f;
+	f.open(fname);
+
+	for (llong i = 0; i < mc_simul.size(); ++i)
+	{
+		isVarianceComputed = false;
+		MC_model->set_N_sims(mc_simul[i]);
+		compute_variance(var_simul);
+		f << mc_simul[i] << "," << E << "\n";
+	}
+
+	f.close();
+
 }
 
 double Simulation::get_E()

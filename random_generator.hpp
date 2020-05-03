@@ -15,6 +15,8 @@ public:
 	virtual double Generate() = 0;
 
 	virtual std::vector<std::vector<double>> Generate(llong n);
+	virtual void Generate(std::vector<std::vector<double>>& W, llong n);
+
 	virtual std::vector<std::vector<double>> get_covariance_matrix();
 
 	double Mean(llong nbSims);
