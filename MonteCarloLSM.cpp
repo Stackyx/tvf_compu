@@ -22,6 +22,9 @@ void MonteCarloLSM::Solve()
 	double dt = (mc_stocks->get_maturity())/(nb_steps-1);
 	double r = mc_stocks->get_mu();
 	
+	
+	std::cout<<"OK1,";
+	
 	for (int k = nb_steps-2; k>0; k--)
 	{
 		std::vector<double> X;
@@ -46,6 +49,7 @@ void MonteCarloLSM::Solve()
 				itm_path[i] = 0;
 			}
 		}
+		
 
 		// regression
 		std::vector<std::vector<double>> L(LSM_Basis->get_matrix_L(X));
@@ -58,25 +62,11 @@ void MonteCarloLSM::Solve()
 
 		transpose_matrix(L, LT);
 		mult_matrix(LT,L,A);
-		std::cout<<"dim A: ("<<A.size()<<", "<<A[0].size()<<"), ";
-		 // dim Ainv: ("<<Ainv.size()<<", "<<Ainv[0].size()<<"), "
-		if (k ==3)
-		{
-		for (int ii =0; ii<A.size();++ii)
-		{
-			for(int jj = 0; jj<A[0].size(); ++jj)
-			{
-				std::cout<< std::setprecision(4)<<A[ii][jj]<<std::setprecision(prec)<<", ";
-			}
-			std::cout<<std::endl;
-		}
-		}
-		inv_sym_defpos(A, Ainv);
-		std::cout<<"OK3, ";
+		inverse(A, Ainv);
 		mult_matrix(Ainv,LT,C);
-
 		mult_matrix_vect(C, Y, Beta);
-
+		
+		
 		//compute continuous value
 		std::vector<double> C_hat;
 		mult_matrix_vect(L, Beta, C_hat);
@@ -95,7 +85,7 @@ void MonteCarloLSM::Solve()
 			}
 			
 		}
-		std::cout<<k<<std::endl;
+
 	}
 	price = std::exp(-r*dt)*std::accumulate(P.begin(), P.end(), 0.0)/(P.size());
 }

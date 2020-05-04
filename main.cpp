@@ -37,6 +37,8 @@
 
 #include "Tools.hpp"
 
+void display_mat(const std::vector<std::vector<double>>& A);
+
 int main()
 {
 	try
@@ -48,7 +50,7 @@ int main()
 		UniformGenerator* vdc2 = new VanDerCorput(1, 3);
 
 		double mu = 0./ 100.;
-		std::vector<double> weights = { 0.5, 0.5 };
+		std::vector<double> weights = { 1, 0.0};
 
 		std::vector<std::vector<double>> cov(2, std::vector<double>(2));
 
@@ -98,7 +100,7 @@ int main()
 		Simulation* MC_simul_standard_anti = new Simulation(mc_solver_antithetic);
 		Simulation* MC_simul_quasi_anti = new Simulation(mc_solver_quasi_anti);
 
-		llong n_sims = 50;
+		llong n_sims = 10000;
 
 		std::cout << "EXPECTATION AND VARIANCE OF MC" << std::endl;
 
@@ -126,12 +128,20 @@ int main()
 
 		ContinuousGenerator* quasi_norm = new NormalMultiVariate(vdc3, vdc4, 0, cov);
 		ContinuousGenerator* norm = new NormalMultiVariate(ecuyer3, 0, cov);
+		
+		NormalAlgo type = BoxMuller;
+		ContinuousGenerator* quasi_norm2 = new Normal(vdc3, vdc4, 0, 0.2);
+		ContinuousGenerator* norm2 = new Normal(ecuyer3,type,  0, 0.2);
+		
+		// norm2->export_csv(1000, "Norm2.csv");
+		// quasi_norm2->export_csv(1000, "QNorm.csv");
 
-		Basis* BLG = new BasisLaguerre(5);
-		StocksFullPath* stocksFP = new StocksStandardFullPath(norm, 100, mu , 1, 100);
-
-		MonteCarloLSM* mc_solverLSM = new MonteCarloLSM(stocksFP, call_payoff_PD, n_simu, BLG);
-		MonteCarlo* mc_solver_std = new MonteCarloEuropean(stocksFP, call_payoff_PD, n_simu);
+		Basis* BLG = new BasisLaguerre(4);
+		StocksFullPath* stocksFP = new StocksStandardFullPath(quasi_norm, 100, mu , 1, 100);
+		StocksTerminal* stocksTT = new StocksStandardTerminal(quasi_norm, 100, mu, 1);
+		
+		MonteCarloLSM* mc_solverLSM = new MonteCarloLSM(stocksFP, call_payoff_PD, n_sims, BLG);
+		MonteCarlo* mc_solver_std = new MonteCarloEuropean(stocksTT, call_payoff, n_sims);
 
 		mc_solverLSM->Solve();
 		mc_solver_std->Solve();
@@ -141,16 +151,9 @@ int main()
 
 		std::cout << "EXPECTATION AND VARIANCE IN FUNCTION OF N_SIMULATION of paths" << std::endl;
 
-
-		// std::vector<std::vector<double>> L(LSM_Basis->get_matrix_L(mc_solverLSM->X));
-		// std::vector<std::vector<double>> M1;
-		// std::vector<std::vector<double>> Minv;
-		
-		
-		
-		
 		/*mc_solver_quasi_anti->Solve();
 		MC_simul_quasi_anti->variance_by_sims(200, { 10, 50, 100, 250, 500, 1000, 2000, 5000, 10000 }, "var_anti.csv");*/
+		
 		
 		
 	}
@@ -162,6 +165,18 @@ int main()
 	return 0;
 }
 
+void display_mat(const std::vector<std::vector<double>>& A)
+{
+	for (int ii =0; ii<A.size();++ii)
+	{
+		for(int jj = 0; jj<A[0].size(); ++jj)
+		{
+			std::cout<<A[ii][jj]<<", ";
+		}
+		std::cout<<std::endl;
+	}
+	
+}
 void test_functions()
 {
 	double mu = 3. / 100.;
@@ -238,15 +253,43 @@ void test_functions()
 		std::cout<< multi[i][0] <<", "<<  multi[i][1] <<", "<<  multi[i][2] <<", "<<  multi[i][3] <<std::endl;
 	}
 	
-	// for (int ii =0; ii<C.size();++ii)
-	// {
-		// for(int jj = 0; jj<C[0].size(); ++jj)
+		// std::vector<std::vector<double>> MAtrix;
+		// MAtrix.resize(4, std::vector<double>(4));
+		// std::vector<std::vector<double>> Matrixinv;
+		// for(int i = 0; i<4; i++)
 		// {
-			// std::cout<< std::setprecision(10)<<C[ii][jj]<<std::setprecision(prec)<<", ";
+			// for(int j = 0; j<4; j++)
+			// {
+				// MAtrix[i][j] = -1.0;
+				// if (i==j){
+					// MAtrix[i][i] = 5.0;
+				// }	
+			// }
 		// }
-		// std::cout<< "       "<< std::setprecision(20) << (X)[ii]<<std::setprecision(prec) <<std::endl;
-		// std::cout<<std::endl;
-	// }
+		
+		// std::cout<< inverse(MAtrix, Matrixinv)<<std::endl;
+		// display_mat(Matrixinv);
+		
+		// std::ofstream f;
+		// f.open("XQnorm2.csv");
+
+		// for (llong i = 0; i < S.size(); ++i)
+		// {
+			// f <<S[i][0][S[0][0].size()-2]<< "\n";
+		// }
+
+		// f.close();
+		
+		// std::ofstream f1;
+		// f1.open("XQnorm1.csv");
+
+		// for (llong i = 0; i < S.size(); ++i)
+		// {
+			// f1 <<S[i][0][S[0][0].size()-1]<< "\n";
+		// }
+
+		// f1.close();
+	
 	
 }
 	
