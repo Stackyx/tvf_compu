@@ -13,7 +13,8 @@ public:
 	MonteCarlo(Stocks* stocks, Payoff* payoff, llong n_sims);
 
 	virtual void Solve() = 0;
-
+	virtual void Solve(Payoff* MC_payoff_CV, double ClosedFormValue)=0;
+	
 	double get_price() const;
 
 	void set_N_sims(llong n_sims);

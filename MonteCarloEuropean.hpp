@@ -8,5 +8,7 @@ public:
 	MonteCarloEuropean(StocksFullPath* stocks, PathDependent* payoff, llong n_sims);
 
 	void Solve();
+	void Solve(Payoff* MC_payoff_CV, double ClosedFormValue);
+	
 };
 

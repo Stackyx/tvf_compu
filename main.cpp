@@ -27,6 +27,9 @@
 #include "NPDBasketPut.hpp"
 #include "PathDependent.hpp"
 #include "PDBasketCall.hpp"
+#include "CFCall.hpp"
+#include "CFPut.hpp"
+#include "NPDCall.hpp"
 
 #include "MonteCarloEuropean.hpp"
 #include "MonteCarloLSM.hpp"
@@ -134,24 +137,25 @@ int main()
 		ContinuousGenerator* quasi_norm = new NormalMultiVariate(vdc3, vdc4, 0, cov);
 		ContinuousGenerator* norm = new NormalMultiVariate(ecuyer3, 0, cov);
 		
-		NormalAlgo type = BoxMuller;
-		ContinuousGenerator* quasi_norm2 = new Normal(vdc3, vdc4, 0, 0.2);
-		ContinuousGenerator* norm2 = new Normal(ecuyer3,type,  0, 0.2);
 		
 		// norm2->export_csv(1000, "Norm2.csv");
 		// quasi_norm2->export_csv(1000, "QNorm.csv");
 
 		Basis* BLG = new BasisLaguerre(4);
 		StocksFullPath* stocksFP = new StocksStandardFullPath(quasi_norm, 100, mu , 1, 100);
-		StocksTerminal* stocksTT = new StocksStandardTerminal(quasi_norm, 100, mu, 1);
+		StocksTerminal* stocksTT = new StocksStandardTerminal(norm, 100, mu, 1);
+		ClosedForm* call_payoff_CF = new CFCall(100);
+		double prix_bs = (*call_payoff_CF)(100, 0 ,1,0.2);
+		NonPathDependent* Call_clasic = new NPDCall(100);
 		
-		MonteCarloLSM* mc_solverLSM = new MonteCarloLSM(stocksFP, call_payoff_PD, n_sims, BLG);
+		
+		// MonteCarloLSM* mc_solverLSM = new MonteCarloLSM(stocksFP, call_payoff_PD, n_sims, BLG);
 		MonteCarlo* mc_solver_std = new MonteCarloEuropean(stocksTT, call_payoff, n_sims);
 
-		mc_solverLSM->Solve();
-		mc_solver_std->Solve();
+		// mc_solverLSM->Solve();
+		mc_solver_std->Solve(Call_clasic, prix_bs);
 
-		std::cout << "Price = " << mc_solverLSM->get_price() << std::endl;
+		// std::cout << "Price = " << mc_solverLSM->get_price() << std::endl;
 		std::cout << "Price = " << mc_solver_std->get_price() << std::endl;
 
 		std::cout << "EXPECTATION AND VARIANCE IN FUNCTION OF N_SIMULATION of paths" << std::endl;
@@ -160,6 +164,12 @@ int main()
 		MC_simul_quasi_anti->variance_by_sims(200, { 10, 50, 100, 250, 500, 1000, 2000, 5000, 10000 }, "var_anti.csv");*/
 		
 		
+		
+		std::cout<<"--- CLOSED FORM PRICE ---"<<std::endl;
+		CFCall* Cl = new CFCall(100);
+		CFPut* Pt = new CFPut(100);
+		std::cout<<"Call Price ClosedForm: "<< (*Cl)(100, 0.02, 1, 0.2)<<std::endl;
+		std::cout<<"Put Price ClosedForm: "<< (*Pt)(100,0.02,1,0.2)<<std::endl;
 		
 	}
 	catch (std::exception & e)
