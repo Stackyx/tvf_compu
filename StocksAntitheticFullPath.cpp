@@ -5,6 +5,11 @@ StocksAntitheticFullPath::StocksAntitheticFullPath(ContinuousGenerator* gen, dou
 {
 }
 
+StocksAntitheticFullPath::StocksAntitheticFullPath(ContinuousGenerator* gen, double s0, double mu, double maturity, R3R1Function* Transform, std::vector<double> dividends, std::vector<double> date_dividends, llong n_steps)
+	: StocksFullPath(gen, s0, mu, maturity, dividends, date_dividends, n_steps), Transform(Transform)
+{
+}
+
 std::vector<std::vector<std::vector<double>>> StocksAntitheticFullPath::Generate(llong n_sims)
 {
 	W.resize(n_sims, std::vector<double>(Gen->get_covariance_matrix().size()));
@@ -16,13 +21,16 @@ std::vector<std::vector<std::vector<double>>> StocksAntitheticFullPath::Generate
 	S.resize(n_sims*2, std::vector<std::vector<double>>(W[0].size(), std::vector<double>(N_steps)));
 
 	double dt = T / (N_steps - 1);
+	llong cpt_div = 0;
+	double divVal = 0;
 	llong cpt(0);
 
-	for (llong i = 0; i < n_sims*2; ++i)
+	for (llong i = 0; i < n_sims; ++i)
 	{
 		for (llong j = 0; j < W[0].size(); ++j)
 		{
-			S[i][j][0] = std::log(S0);
+			// S[i][j][0] = std::log(S0);
+			S[i][j][0] = S0;
 		}
 	}
 
@@ -31,16 +39,27 @@ std::vector<std::vector<std::vector<double>>> StocksAntitheticFullPath::Generate
 		W = Gen->Generate(n_sims);
 		W_transform = (*Transform)(W, 0, 1);
 
+		if (z * dt < Date_Div[cpt_div] && Date_Div[cpt_div] <= (z + 1) * dt)
+		{
+			divVal = Div[cpt_div];
+
+			if (cpt_div < Div.size()-1)
+			{
+				cpt_div += 1;
+			}
+		}
+
 		cpt = 0;
-		for (llong i = 0; i < n_sims*2-1; ++i)
+		for (llong i = 0; i < n_sims*2-1; i+=2)
 		{
 			for (llong j = 0; j < W[0].size(); j++)
 			{
-				S[i][j][z] = S[i][j][z - 1] + (Mu - 1 / 2 * Gen->get_covariance_matrix()[j][j]) * dt + std::sqrt(dt) * W[cpt][j];
-				S[i+1][j][z] = S[i][j][z - 1] + (Mu - 1 / 2 * Gen->get_covariance_matrix()[j][j]) * dt + std::sqrt(dt) * W_transform[cpt][j];
+				S[i][j][z] = S[i][j][z - 1] + S[i][j][z - 1] * ((Mu)*dt + std::sqrt(dt) * W[cpt][j]) - divVal;
+				S[i][j][z] = S[i][j][z - 1] + S[i][j][z - 1] * ((Mu)*dt + std::sqrt(dt) * W_transform[cpt][j]) - divVal;
 			}
 			cpt += 1;
 		}
+		divVal = 0;
 	}
 
 	for (llong i = 0; i < n_sims*2; ++i)
