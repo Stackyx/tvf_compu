@@ -100,7 +100,10 @@ int main()
 		Simulation* MC_simul_standard_anti = new Simulation(mc_solver_antithetic);
 		Simulation* MC_simul_quasi_anti = new Simulation(mc_solver_quasi_anti);
 
-		llong n_sims = 10000;
+		llong n_sims = 100;
+
+		StocksFullPath* stocks_Div = new StocksStandardFullPath(biv_norm2, 100, 0, 1, { 3, 4 }, { 0.4, 0.8 }, 100);
+		std::vector<std::vector<std::vector<double>>> testS = stocks_Div->Generate(100);
 
 		std::cout << "EXPECTATION AND VARIANCE OF MC" << std::endl;
 
