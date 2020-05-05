@@ -23,4 +23,6 @@ void getCofactor(const std::vector<std::vector<double>>& A, std::vector<std::vec
 double determinant(const std::vector<std::vector<double>>& A, int n);
 void adjoint(const std::vector<std::vector<double>>& A, std::vector<std::vector<double>>& adj);
 bool inverse(const std::vector<std::vector<double>>& A, std::vector<std::vector<double>>& inv);
+
+double normalCDF(double value);
 #endif

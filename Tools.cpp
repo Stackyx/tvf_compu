@@ -1,4 +1,5 @@
 #include "Tools.hpp"
+#include <cmath>
 
 void mult_matrix(const std::vector<std::vector<double>>& M1, const std::vector<std::vector<double>>& M2, std::vector<std::vector<double>>& M3)
 {
@@ -352,6 +353,11 @@ bool inverse(const std::vector<std::vector<double>>& A, std::vector<std::vector<
 } 
 
 
+//Cumulative Normal Function
+double normalCDF(double value)
+{
+   return 0.5 * erfc(-value * std::sqrt(0.5));
+}
 
 
 
