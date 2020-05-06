@@ -23,15 +23,15 @@ void MonteCarloLSM::Solve()
 	double r = mc_stocks->get_mu();
 	
 	
-	std::cout<<"OK1,";
-	
 	for (int k = nb_steps-2; k>0; k--)
 	{
 		std::vector<double> X;
 		std::vector<double> Y;
-
+		
+		// std::cout<<"----------time "<<k<<" -----------"<<std::endl;
 		for(int i = 0; i<P.size(); i++)
 		{
+			
 			//seperate the path in the money
 			if (P[i]>0)
 			{
@@ -49,7 +49,6 @@ void MonteCarloLSM::Solve()
 				itm_path[i] = 0;
 			}
 		}
-		
 
 		// regression
 		std::vector<std::vector<double>> L(LSM_Basis->get_matrix_L(X));
@@ -62,22 +61,33 @@ void MonteCarloLSM::Solve()
 
 		transpose_matrix(L, LT);
 		mult_matrix(LT,L,A);
-		inverse(A, Ainv);
+		inv_sym_defpos(A, Ainv);
+		
+		std::vector<std::vector<double>> CC;
+		mult_matrix(A, Ainv, CC);
+		// display_mat(CC);
+		// std::cout<<std::endl;
+		
 		mult_matrix(Ainv,LT,C);
 		mult_matrix_vect(C, Y, Beta);
-		
-		
+
 		//compute continuous value
 		std::vector<double> C_hat;
 		mult_matrix_vect(L, Beta, C_hat);
 		std::vector<double> G((*LSM_payoff)(S, k));
 		int c = 0;
+		
 		for (int i = 0; i<P.size(); i++)
 		{
-			if ((itm_path[i] == 1)&&(G[i]>C_hat[c]))
+			if (itm_path[i] == 1)
 			{
+
+				// std::cout<< "Spot = "<<X[c]<< ", G(S(t)) = "<< G[i] <<", C_hat = "<<C_hat[c]<<std::endl;
+				if (G[i]>C_hat[c])
+				{
+					P[i] = G[i];
+				}
 				c +=1;
-				P[i] = G[i];
 			}
 			else
 			{
@@ -90,6 +100,35 @@ void MonteCarloLSM::Solve()
 	price = std::exp(-r*dt)*std::accumulate(P.begin(), P.end(), 0.0)/(P.size());
 }
 
+void MonteCarloLSM::Solve(Payoff* MC_payoff_CV, double ClosedFormValue)
+{
+	
+		throw std::runtime_error("Not appropriate");
+}
 
 
+void display_mat(const std::vector<std::vector<double>>& A)
+{
+	for (int ii =0; ii<A.size();++ii)
+	{
+		for(int jj = 0; jj<A[0].size(); ++jj)
+		{
+			std::cout<<A[ii][jj]<<", ";
+		}
+		std::cout<<std::endl;
+	}
+	
+}
+
+void display_vect(const std::vector<double>& A)
+{
+	for (int ii =0; ii<A.size();++ii)
+	{
+
+		std::cout<<A[ii]<<", ";
+		
+	}
+	std::cout<<std::endl;
+	
+}
 
