@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <algorithm>
 #include <numeric>
 #include <fstream>
@@ -40,7 +41,7 @@
 
 #include "Tools.hpp"
 
-void display_mat(const std::vector<std::vector<double>>& A);
+// void display_mat(const std::vector<std::vector<double>>& A);
 
 int main()
 {
@@ -103,9 +104,9 @@ int main()
 		Simulation* MC_simul_standard_anti = new Simulation(mc_solver_antithetic);
 		Simulation* MC_simul_quasi_anti = new Simulation(mc_solver_quasi_anti);
 
-		llong n_sims = 100;
+		llong n_sims = 10000;
 
-		StocksFullPath* stocks_Div = new StocksStandardFullPath(biv_norm2, 100, 0, 1, { 3, 4 }, { 0.4, 0.8 }, 100);
+		StocksFullPath* stocks_Div = new StocksStandardFullPath(biv_norm2, 100, 0, 1, { 3, 4 }, { 0.4, 0.8 }, 5);
 		StocksFullPath* stocks_Div_Anti = new StocksAntitheticFullPath(biv_norm2, 100, 0, 1, antithetic_function, { 3, 4 }, { 0.4, 0.8 }, 100);
 		std::vector<std::vector<std::vector<double>>> testS = stocks_Div->Generate(100);
 		std::vector<std::vector<std::vector<double>>> testS_anti = stocks_Div_Anti->Generate(100);
@@ -141,21 +142,22 @@ int main()
 		// norm2->export_csv(1000, "Norm2.csv");
 		// quasi_norm2->export_csv(1000, "QNorm.csv");
 
-		Basis* BLG = new BasisLaguerre(4);
-		StocksFullPath* stocksFP = new StocksStandardFullPath(quasi_norm, 100, mu , 1, 100);
+		Basis* BLG = new BasisLaguerre(2);
+		StocksFullPath* stocksFP = new StocksStandardFullPath(norm, 100, mu , 1, 100);
 		StocksTerminal* stocksTT = new StocksStandardTerminal(norm, 100, mu, 1);
 		ClosedForm* call_payoff_CF = new CFCall(100);
 		double prix_bs = (*call_payoff_CF)(100, 0 ,1,0.2);
 		NonPathDependent* Call_clasic = new NPDCall(100);
 		
 		
-		// MonteCarloLSM* mc_solverLSM = new MonteCarloLSM(stocksFP, call_payoff_PD, n_sims, BLG);
-		MonteCarlo* mc_solver_std = new MonteCarloEuropean(stocksTT, call_payoff, n_sims);
+		MonteCarloLSM* mc_solverLSM = new MonteCarloLSM(stocks_Div, call_payoff_PD, n_sims, BLG);
+		MonteCarlo* mc_solver_std = new MonteCarloEuropean(stocks_Div, call_payoff_PD, n_sims);
 
-		// mc_solverLSM->Solve();
-		mc_solver_std->Solve(Call_clasic, prix_bs);
-
-		// std::cout << "Price = " << mc_solverLSM->get_price() << std::endl;
+		mc_solverLSM->Solve();
+		// mc_solver_std->Solve(Call_clasic, prix_bs);
+		mc_solver_std->Solve();
+	
+		std::cout << "Price = " << mc_solverLSM->get_price() << std::endl;
 		std::cout << "Price = " << mc_solver_std->get_price() << std::endl;
 
 		std::cout << "EXPECTATION AND VARIANCE IN FUNCTION OF N_SIMULATION of paths" << std::endl;
@@ -164,12 +166,11 @@ int main()
 		MC_simul_quasi_anti->variance_by_sims(200, { 10, 50, 100, 250, 500, 1000, 2000, 5000, 10000 }, "var_anti.csv");*/
 		
 		
-		
-		std::cout<<"--- CLOSED FORM PRICE ---"<<std::endl;
+ 		std::cout<<"--- CLOSED FORM PRICE ---"<<std::endl;
 		CFCall* Cl = new CFCall(100);
 		CFPut* Pt = new CFPut(100);
-		std::cout<<"Call Price ClosedForm: "<< (*Cl)(100, 0.02, 1, 0.2)<<std::endl;
-		std::cout<<"Put Price ClosedForm: "<< (*Pt)(100,0.02,1,0.2)<<std::endl;
+		std::cout<<"Call Price ClosedForm: "<< (*Cl)(93, 0.0, 1, 0.2)<<std::endl;
+		std::cout<<"Put Price ClosedForm: "<< (*Pt)(93,0.0,1,0.2)<<std::endl;
 		
 	}
 	catch (std::exception & e)
@@ -180,18 +181,19 @@ int main()
 	return 0;
 }
 
-void display_mat(const std::vector<std::vector<double>>& A)
-{
-	for (int ii =0; ii<A.size();++ii)
-	{
-		for(int jj = 0; jj<A[0].size(); ++jj)
-		{
-			std::cout<<A[ii][jj]<<", ";
-		}
-		std::cout<<std::endl;
-	}
+// void display_mat(const std::vector<std::vector<double>>& A)
+// {
+	// for (int ii =0; ii<A.size();++ii)
+	// {
+		// for(int jj = 0; jj<A[0].size(); ++jj)
+		// {
+			// std::cout<<A[ii][jj]<<", ";
+		// }
+		// std::cout<<std::endl;
+	// }
 	
-}
+// }
+
 void test_functions()
 {
 	double mu = 3. / 100.;
