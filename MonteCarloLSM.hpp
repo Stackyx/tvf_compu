@@ -11,6 +11,7 @@ public:
 	MonteCarloLSM(StocksFullPath* stocks, PathDependent* payoff, llong n_sims, Basis* BasisFunction);
 	
 	void Solve();
+	void Solve(PathDependent* MC_payoff_CV, double ClosedFormValue);
 	void Solve(Payoff* MC_payoff_CV, double ClosedFormValue);
 	// std::vector<std::vector<double>> A;
 	// std::vector<std::vector<double>> Ainv;
