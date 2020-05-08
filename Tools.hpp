@@ -25,4 +25,8 @@ void adjoint(const std::vector<std::vector<double>>& A, std::vector<std::vector<
 bool inverse(const std::vector<std::vector<double>>& A, std::vector<std::vector<double>>& inv);
 
 double normalCDF(double value);
+
+void display_mat(const std::vector<std::vector<double>>& A);
+void display_vect(const std::vector<double>& A);
+
 #endif

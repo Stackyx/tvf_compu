@@ -359,5 +359,30 @@ double normalCDF(double value)
    return 0.5 * erfc(-value * std::sqrt(0.5));
 }
 
+//Display a matrix
+void display_mat(const std::vector<std::vector<double>>& A)
+{
+	for (int ii =0; ii<A.size();++ii)
+	{
+		for(int jj = 0; jj<A[0].size(); ++jj)
+		{
+			std::cout<<A[ii][jj]<<", ";
+		}
+		std::cout<<std::endl;
+	}
+	
+}
 
+//Display a vector
+void display_vect(const std::vector<double>& A)
+{
+	for (int ii =0; ii<A.size();++ii)
+	{
+
+		std::cout<<A[ii]<<", ";
+		
+	}
+	std::cout<<std::endl;
+	
+}
 
