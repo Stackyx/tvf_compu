@@ -2,8 +2,9 @@
 #include "NullPayoff.hpp"
 
 MonteCarlo::MonteCarlo(Stocks* stocks, Payoff* payoff, llong n_sims)
-	: mc_stocks(stocks), mc_payoff(payoff), N_sims(n_sims), MC_payoff_CV(new NullPayoff()), closedFormValue(0)
+	: mc_stocks(stocks), mc_payoff(payoff), N_sims(n_sims), closedFormValue(0)
 {
+	 MC_payoff_CV = new NullPayoff((mc_payoff->get_weights()).size());
 }
 
 MonteCarlo::MonteCarlo(Stocks* stocks, Payoff* payoff, llong n_sims, Payoff* payoff_CV, double closedFormValue)

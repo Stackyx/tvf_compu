@@ -31,6 +31,7 @@
 #include "CFCall.hpp"
 #include "CFPut.hpp"
 #include "NPDCall.hpp"
+#include "PDCall.hpp"
 
 #include "MonteCarloEuropean.hpp"
 #include "MonteCarloLSM.hpp"
@@ -79,8 +80,9 @@ int main()
 
 		ClosedForm* call_payoff_CF = new CFCall(100);
 		double prix_bs = (*call_payoff_CF)(100, 0 ,1,0.2);
+		double prix_bs_div = (*call_payoff_CF)(93, 0 ,1,0.2);
 		NonPathDependent* Call_clasic = new NPDCall(100);
-		
+		PathDependent* Call_clasic_PD = new PDCall(100);
 		
 		// --- Standard MC Terminal
 
@@ -134,51 +136,51 @@ int main()
 		Simulation* MC_simul_quasi_CV = new Simulation(mc_solver_quasi_CV);
 		Simulation* MC_simul_quasi_anti_CV = new Simulation(mc_simul_quasi_anti_CV);
 
-		llong n_sims = 100;
+		llong n_sims = 1000;
 
-		StocksFullPath* stocks_Div = new StocksStandardFullPath(biv_norm2, 100, 0, 1, { 3, 4 }, { 0.4, 0.8 }, 5);
+		StocksFullPath* stocks_Div = new StocksStandardFullPath(biv_norm2, 100, 0, 1, { 3, 4 }, { 0.4, 0.8 }, 100);
 		StocksFullPath* stocks_Div_Anti = new StocksAntitheticFullPath(biv_norm2, 100, 0, 1, antithetic_function, { 3, 4 }, { 0.4, 0.8 }, 100);
 
-		std::vector<std::vector<std::vector<double>>> testS = stocks_Div->Generate(100);
-		std::vector<std::vector<std::vector<double>>> testS_anti = stocks_Div_Anti->Generate(100);
+		// std::vector<std::vector<std::vector<double>>> testS = stocks_Div->Generate(100);
+		// std::vector<std::vector<std::vector<double>>> testS_anti = stocks_Div_Anti->Generate(100);
 
 		std::cout << "EXPECTATION AND VARIANCE OF MC" << std::endl;
 
-		MC_simul_standard->compute_expectation(n_sims);
-		MC_simul_standard->compute_variance(n_sims);
+		// MC_simul_standard->compute_expectation(n_sims);
+		// MC_simul_standard->compute_variance(n_sims);
 
-		MC_simul_quasi->compute_expectation(n_sims);
-		MC_simul_quasi->compute_variance(n_sims);
+		// MC_simul_quasi->compute_expectation(n_sims);
+		// MC_simul_quasi->compute_variance(n_sims);
 
-		MC_simul_standard_anti->compute_expectation(n_sims);
-		MC_simul_standard_anti->compute_variance(n_sims);
+		// MC_simul_standard_anti->compute_expectation(n_sims);
+		// MC_simul_standard_anti->compute_variance(n_sims);
 
-		MC_simul_CV->compute_expectation(n_sims);
-		MC_simul_CV->compute_variance(n_sims);
+		// MC_simul_CV->compute_expectation(n_sims);
+		// MC_simul_CV->compute_variance(n_sims);
 		
-		MC_simul_quasi_anti->compute_expectation(n_sims);
-		MC_simul_quasi_anti->compute_variance(n_sims);
+		// MC_simul_quasi_anti->compute_expectation(n_sims);
+		// MC_simul_quasi_anti->compute_variance(n_sims);
 		
-		MC_simul_anti_CV->compute_expectation(n_sims);
-		MC_simul_anti_CV->compute_variance(n_sims);
+		// MC_simul_anti_CV->compute_expectation(n_sims);
+		// MC_simul_anti_CV->compute_variance(n_sims);
 		
-		MC_simul_quasi_CV->compute_expectation(n_sims);
-		MC_simul_quasi_CV->compute_variance(n_sims);
+		// MC_simul_quasi_CV->compute_expectation(n_sims);
+		// MC_simul_quasi_CV->compute_variance(n_sims);
 
-		MC_simul_quasi_anti_CV->compute_expectation(n_sims);
-		MC_simul_quasi_anti_CV->compute_variance(n_sims);		
+		// MC_simul_quasi_anti_CV->compute_expectation(n_sims);
+		// MC_simul_quasi_anti_CV->compute_variance(n_sims);		
 		
 
-		std::cout << "STANDARD :: Expectation = " << MC_simul_standard->get_E() << ", Variance = " << MC_simul_standard->get_V() << std::endl;
-		std::cout << "STANDARD ANTITHETIC :: Expectation = " << MC_simul_standard_anti->get_E() << ", Variance = " << MC_simul_standard_anti->get_V() << std::endl;
-		std::cout << "STANDARD CONTROL VARIATE :: Expectation = " << MC_simul_CV->get_E() << ", Variance = " << MC_simul_CV->get_V() << std::endl;
-		std::cout << "STANDARD ANTITHETIC CONTROL VARIATE:: Expectation = " << MC_simul_anti_CV->get_E() << ", Variance = " << MC_simul_anti_CV->get_V() << std::endl;
+		// std::cout << "STANDARD :: Expectation = " << MC_simul_standard->get_E() << ", Variance = " << MC_simul_standard->get_V() << std::endl;
+		// std::cout << "STANDARD ANTITHETIC :: Expectation = " << MC_simul_standard_anti->get_E() << ", Variance = " << MC_simul_standard_anti->get_V() << std::endl;
+		// std::cout << "STANDARD CONTROL VARIATE :: Expectation = " << MC_simul_CV->get_E() << ", Variance = " << MC_simul_CV->get_V() << std::endl;
+		// std::cout << "STANDARD ANTITHETIC CONTROL VARIATE:: Expectation = " << MC_simul_anti_CV->get_E() << ", Variance = " << MC_simul_anti_CV->get_V() << std::endl;
 
 
-		std::cout << "QUASI :: Expectation = " << MC_simul_quasi->get_E() << ", Variance = " << MC_simul_quasi->get_V() << std::endl;
-		std::cout << "QUASI ANTITHETIC :: Expectation = " << MC_simul_quasi_anti->get_E() << ", Variance = " << MC_simul_quasi_anti->get_V() << std::endl;
-		std::cout << "QUASI CONTROL VARIATE :: Expectation = " << MC_simul_quasi_CV->get_E() << ", Variance = " << MC_simul_quasi_CV->get_V() << std::endl;
-		std::cout << "QUASI ANTITHETIC CONTROL VARIATE :: Expectation = " << MC_simul_quasi_CV->get_E() << ", Variance = " << MC_simul_quasi_CV->get_V() << std::endl;
+		// std::cout << "QUASI :: Expectation = " << MC_simul_quasi->get_E() << ", Variance = " << MC_simul_quasi->get_V() << std::endl;
+		// std::cout << "QUASI ANTITHETIC :: Expectation = " << MC_simul_quasi_anti->get_E() << ", Variance = " << MC_simul_quasi_anti->get_V() << std::endl;
+		// std::cout << "QUASI CONTROL VARIATE :: Expectation = " << MC_simul_quasi_CV->get_E() << ", Variance = " << MC_simul_quasi_CV->get_V() << std::endl;
+		// std::cout << "QUASI ANTITHETIC CONTROL VARIATE :: Expectation = " << MC_simul_quasi_CV->get_E() << ", Variance = " << MC_simul_quasi_CV->get_V() << std::endl;
 
 		UniformGenerator* vdc3 = new VanDerCorput(1, 2);
 		UniformGenerator* vdc4 = new VanDerCorput(1, 3);
@@ -194,11 +196,10 @@ int main()
 		StocksFullPath* stocksFP = new StocksStandardFullPath(norm, 100, mu , 1, 100);
 		StocksTerminal* stocksTT = new StocksStandardTerminal(norm, 100, mu, 1);
 		
-		MonteCarloLSM* mc_solverLSM = new MonteCarloLSM(stocks_Div, call_payoff_PD, n_sims, BLG);
+		MonteCarloLSM* mc_solverLSM = new MonteCarloLSM(stocks_Div, call_payoff_PD, n_sims, BLG, Call_clasic, prix_bs_div);
 		MonteCarlo* mc_solver_std = new MonteCarloEuropean(stocks_Div, call_payoff_PD, n_sims);
 
 		mc_solverLSM->Solve();
-		// mc_solver_std->Solve(Call_clasic, prix_bs);
 		mc_solver_std->Solve();
 	
 		std::cout << "Price = " << mc_solverLSM->get_price() << std::endl;

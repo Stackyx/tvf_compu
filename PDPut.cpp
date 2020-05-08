@@ -38,7 +38,7 @@ std::vector<double> PDPut::operator()(const std::vector<std::vector<std::vector<
 }
 
 
-std::vector<double> PDPut::operator()(const std::vector<std::vector<std::vector<double>>>& x, const int& k) 
+std::vector<double> PDPut::operator()(const std::vector<std::vector<std::vector<double>>>& x, const int& k) const
 {
 	
 	std::vector<double> Values;
