@@ -6,6 +6,7 @@ class NonPathDependent : public Payoff
 {
 	
 public:
+	NonPathDependent();
 	NonPathDependent(double strike);
 	
 protected:

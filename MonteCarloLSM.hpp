@@ -13,6 +13,7 @@ public:
 	void Solve();
 	void Solve(PathDependent* MC_payoff_CV, double ClosedFormValue);
 	void Solve(Payoff* MC_payoff_CV, double ClosedFormValue);
+
 	// std::vector<std::vector<double>> A;
 	// std::vector<std::vector<double>> Ainv;
 	// std::vector<double> X;

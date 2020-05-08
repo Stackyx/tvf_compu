@@ -100,7 +100,7 @@ int main()
 		// --- MC Terminal with Control Variate variance reduction
 
 		StocksTerminal* stocksT4 = new StocksStandardTerminal(biv_norm, 100, mu, 1);
-		MonteCarlo* mc_solver_CV = new MonteCarloEuropean(stocksT4, call_payoff, llong(n_simu/2));
+		MonteCarlo* mc_solver_CV = new MonteCarloEuropean(stocksT4, call_payoff, llong(n_simu/2), Call_clasic, prix_bs);
 		
 		// --- MC Terminal with antithetic and quasi random numbers variance reduction
 
@@ -110,17 +110,17 @@ int main()
 		// --- MC Terminal with Antithetic and Control Variate variance reduction
 
 		StocksTerminal* stocksT6 = new StocksAntitheticTerminal(biv_norm, 100, mu, 1, antithetic_function);
-		MonteCarlo* mc_solver_anti_CV = new MonteCarloEuropean(stocksT6, call_payoff, llong(n_simu/2));
+		MonteCarlo* mc_solver_anti_CV = new MonteCarloEuropean(stocksT6, call_payoff, llong(n_simu/2), Call_clasic, prix_bs);
 		
 		// --- MC Terminal  with Quasi random numbers and Control Variate variance reduction
 
 		StocksTerminal* stocksT7 = new StocksStandardTerminal(biv_norm3, 100, mu, 1);
-		MonteCarlo* mc_solver_quasi_CV = new MonteCarloEuropean(stocksT7, call_payoff, llong(n_simu/2));
+		MonteCarlo* mc_solver_quasi_CV = new MonteCarloEuropean(stocksT7, call_payoff, llong(n_simu/2), Call_clasic, prix_bs);
 
 		// --- MC Terminal  with Quasi random numbers anthitetic and Control Variate variance reduction
 
 		StocksTerminal* stocksT8 = new StocksAntitheticTerminal(biv_norm3, 100, mu, 1, antithetic_function);
-		MonteCarlo* mc_simul_quasi_anti_CV = new MonteCarloEuropean(stocksT8, call_payoff, llong(n_simu/2));
+		MonteCarlo* mc_simul_quasi_anti_CV = new MonteCarloEuropean(stocksT8, call_payoff, llong(n_simu/2), Call_clasic, prix_bs);
 
 
 		// ------ MC Simulation ------
@@ -134,10 +134,11 @@ int main()
 		Simulation* MC_simul_quasi_CV = new Simulation(mc_solver_quasi_CV);
 		Simulation* MC_simul_quasi_anti_CV = new Simulation(mc_simul_quasi_anti_CV);
 
-		llong n_sims = 10000;
+		llong n_sims = 100;
 
 		StocksFullPath* stocks_Div = new StocksStandardFullPath(biv_norm2, 100, 0, 1, { 3, 4 }, { 0.4, 0.8 }, 5);
 		StocksFullPath* stocks_Div_Anti = new StocksAntitheticFullPath(biv_norm2, 100, 0, 1, antithetic_function, { 3, 4 }, { 0.4, 0.8 }, 100);
+
 		std::vector<std::vector<std::vector<double>>> testS = stocks_Div->Generate(100);
 		std::vector<std::vector<std::vector<double>>> testS_anti = stocks_Div_Anti->Generate(100);
 
@@ -152,20 +153,20 @@ int main()
 		MC_simul_standard_anti->compute_expectation(n_sims);
 		MC_simul_standard_anti->compute_variance(n_sims);
 
-		MC_simul_CV->compute_expectation(n_sims, Call_clasic, prix_bs);
-		MC_simul_CV->compute_variance(n_sims, Call_clasic, prix_bs);
+		MC_simul_CV->compute_expectation(n_sims);
+		MC_simul_CV->compute_variance(n_sims);
 		
 		MC_simul_quasi_anti->compute_expectation(n_sims);
 		MC_simul_quasi_anti->compute_variance(n_sims);
 		
-		MC_simul_anti_CV->compute_expectation(n_sims, Call_clasic, prix_bs);
-		MC_simul_anti_CV->compute_variance(n_sims, Call_clasic, prix_bs);
+		MC_simul_anti_CV->compute_expectation(n_sims);
+		MC_simul_anti_CV->compute_variance(n_sims);
 		
-		MC_simul_quasi_CV->compute_expectation(n_sims, Call_clasic, prix_bs);
-		MC_simul_quasi_CV->compute_variance(n_sims, Call_clasic, prix_bs);
+		MC_simul_quasi_CV->compute_expectation(n_sims);
+		MC_simul_quasi_CV->compute_variance(n_sims);
 
-		MC_simul_quasi_anti_CV->compute_expectation(n_sims, Call_clasic, prix_bs);
-		MC_simul_quasi_anti_CV->compute_variance(n_sims, Call_clasic, prix_bs);		
+		MC_simul_quasi_anti_CV->compute_expectation(n_sims);
+		MC_simul_quasi_anti_CV->compute_variance(n_sims);		
 		
 
 		std::cout << "STANDARD :: Expectation = " << MC_simul_standard->get_E() << ", Variance = " << MC_simul_standard->get_V() << std::endl;
@@ -179,10 +180,6 @@ int main()
 		std::cout << "QUASI CONTROL VARIATE :: Expectation = " << MC_simul_quasi_CV->get_E() << ", Variance = " << MC_simul_quasi_CV->get_V() << std::endl;
 		std::cout << "QUASI ANTITHETIC CONTROL VARIATE :: Expectation = " << MC_simul_quasi_CV->get_E() << ", Variance = " << MC_simul_quasi_CV->get_V() << std::endl;
 
-
-
-
-
 		UniformGenerator* vdc3 = new VanDerCorput(1, 2);
 		UniformGenerator* vdc4 = new VanDerCorput(1, 3);
 		UniformGenerator* ecuyer3 = new EcuyerCombined(1, 1);
@@ -190,16 +187,12 @@ int main()
 		ContinuousGenerator* quasi_norm = new NormalMultiVariate(vdc3, vdc4, 0, cov);
 		ContinuousGenerator* norm = new NormalMultiVariate(ecuyer3, 0, cov);
 		
-		
 		// norm2->export_csv(1000, "Norm2.csv");
 		// quasi_norm2->export_csv(1000, "QNorm.csv");
 
 		Basis* BLG = new BasisLaguerre(2);
 		StocksFullPath* stocksFP = new StocksStandardFullPath(norm, 100, mu , 1, 100);
 		StocksTerminal* stocksTT = new StocksStandardTerminal(norm, 100, mu, 1);
-
-
-		
 		
 		MonteCarloLSM* mc_solverLSM = new MonteCarloLSM(stocks_Div, call_payoff_PD, n_sims, BLG);
 		MonteCarlo* mc_solver_std = new MonteCarloEuropean(stocks_Div, call_payoff_PD, n_sims);
@@ -222,7 +215,7 @@ int main()
 		CFPut* Pt = new CFPut(100);
 		std::cout<<"Call Price ClosedForm: "<< (*Cl)(93, 0.0, 1, 0.2)<<std::endl;
 		std::cout<<"Put Price ClosedForm: "<< (*Pt)(93,0.0,1,0.2)<<std::endl;
-		
+
 	}
 	catch (std::exception & e)
 	{
