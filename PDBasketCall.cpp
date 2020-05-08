@@ -40,7 +40,7 @@ std::vector<double> PDBasketCall::operator()(const std::vector<std::vector<std::
 }
 
 
-std::vector<double> PDBasketCall::operator()(const std::vector<std::vector<std::vector<double>>>& x, const int& k)
+std::vector<double> PDBasketCall::operator()(const std::vector<std::vector<std::vector<double>>>& x, const int& k) const
 {
 	if (len_weights > x[0].size())
 	{

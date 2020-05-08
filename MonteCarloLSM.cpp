@@ -4,14 +4,22 @@
 #include <iomanip>
 
 MonteCarloLSM::MonteCarloLSM(StocksFullPath* stocks, PathDependent* payoff, llong n_sims, Basis* BasisFunction)
-	: MonteCarlo(stocks, payoff, n_sims), LSM_Basis(BasisFunction), LSM_payoff(payoff)
+	: MonteCarlo(stocks, payoff, n_sims), LSM_Basis(BasisFunction)
 {
 }
 
 MonteCarloLSM::MonteCarloLSM(StocksFullPath* stocks, PathDependent* payoff, llong n_sims, Basis* BasisFunction, PathDependent* payoff_CV, double closedFormValue)
-	: MonteCarlo(stocks, payoff, n_sims, payoff_CV, closedFormValue), LSM_Basis(BasisFunction), LSM_payoff(payoff)
+	: MonteCarlo(stocks, payoff, n_sims, payoff_CV, closedFormValue), LSM_Basis(BasisFunction)
 {
+	PD_or_NPD = 1;
 }
+
+MonteCarloLSM::MonteCarloLSM(StocksFullPath* stocks, PathDependent* payoff, llong n_sims, Basis* BasisFunction, NonPathDependent* payoff_CV, double closedFormValue)
+	: MonteCarlo(stocks, payoff, n_sims, payoff_CV, closedFormValue), LSM_Basis(BasisFunction)
+{
+	PD_or_NPD = 0;
+}
+
 
 
 void MonteCarloLSM::Solve()
@@ -19,11 +27,19 @@ void MonteCarloLSM::Solve()
 	
 	std::vector<std::vector<std::vector<double>>> S(mc_stocks->Generate(N_sims));
 	
-	std::vector<double> P((*LSM_payoff)(S, S[0][0].size()-1));
+	std::vector<double> P((*mc_payoff)(S, S[0][0].size()-1));
 	std::vector<double> itm_path(P.size());
-	std::vector<double> Weights(LSM_payoff->get_weights());
+	std::vector<double> Weights(mc_payoff->get_weights());
 	
-	std::vector<double> P2((*MC_payoff_CV)(S, S[0][0].size()-1));
+	std::vector<double> P2;
+	if (PD_or_NPD)
+	{
+		P2 = ((*MC_payoff_CV)(S, S[0][0].size()-1));
+	}
+	else
+	{
+		P2 = ((*MC_payoff_CV)(S));
+	}
 	std::vector<double> itm_path2(P2.size());
 	std::vector<double> Weights2(MC_payoff_CV->get_weights());
 
@@ -32,8 +48,7 @@ void MonteCarloLSM::Solve()
 	size_t nb_steps = S[0][0].size();
 	double dt = (mc_stocks->get_maturity())/(nb_steps-1);
 	double r = mc_stocks->get_mu();
-	
-	
+
 	for (int k = nb_steps-2; k>0; k--)
 	{
 		std::vector<double> X;
@@ -41,7 +56,7 @@ void MonteCarloLSM::Solve()
 		
 		std::vector<double> X2;
 		std::vector<double> Y2;
-
+		
 		for(int i = 0; i<P.size(); i++)
 		{
 			
@@ -63,7 +78,7 @@ void MonteCarloLSM::Solve()
 			}
 			
 			
-			if (P2[i]>0)
+			if ((P2[i]>0) && PD_or_NPD)
 			{
 				itm_path2[i] = 1;
 				double xi = 0;
@@ -81,48 +96,17 @@ void MonteCarloLSM::Solve()
 			
 		}
 
-		// regression
-		std::vector<std::vector<double>> L(LSM_Basis->get_matrix_L(X));
-		std::vector<std::vector<double>> LT;
-		std::vector<std::vector<double>> A;
-		std::vector<std::vector<double>> Ainv;
-		std::vector<std::vector<double>> C;
-		std::vector<double> Beta;
-		
-		std::vector<std::vector<double>> L2(LSM_Basis->get_matrix_L(X2));
-		std::vector<std::vector<double>> L2T;
-		std::vector<std::vector<double>> A2;
-		std::vector<std::vector<double>> Ainv2;
-		std::vector<std::vector<double>> C2;
-		std::vector<double> Beta2;
-
-		transpose_matrix(L, LT);
-		transpose_matrix(L2, L2T);
-		
-		mult_matrix(LT,L,A);
-		mult_matrix(L2T,L2,A2);
-		
-		inv_sym_defpos(A, Ainv);
-		inv_sym_defpos(A2, Ainv2);
-		
-		std::vector<std::vector<double>> CC;
-		std::vector<std::vector<double>> CC2;
-		mult_matrix(A, Ainv, CC);
-		mult_matrix(A2, Ainv2, CC2);
-		
-		mult_matrix(Ainv,LT,C);
-		mult_matrix(Ainv2,L2T,C2);
-		mult_matrix_vect(C, Y, Beta);
-		mult_matrix_vect(C2, Y2, Beta2);
-
-		//compute continuous value
-		std::vector<double> C_hat;
+		std::vector<double> C_hat(Regression_C_Hat(X, Y));
 		std::vector<double> C_hat2;
-		mult_matrix_vect(L, Beta, C_hat);
-		mult_matrix_vect(L2, Beta2, C_hat2);
-		std::vector<double> G((*LSM_payoff)(S, k));
-		std::vector<double> G2((*MC_payoff_CV)(S, k));
+		std::vector<double> G2;
+		std::vector<double> G((*mc_payoff)(S, k));
 		
+		
+		if (X2.size()>0)
+		{
+			C_hat2 = Regression_C_Hat(X2, Y2);
+			G2 = (*MC_payoff_CV)(S, k);
+		}
 		
 		
 		int c = 0;
@@ -144,11 +128,10 @@ void MonteCarloLSM::Solve()
 				P[i] = std::exp(-r*dt)*P[i];
 			}
 			
-			
-			if (itm_path2[i] == 1)
-			{
+			if ((itm_path2[i] == 1) && PD_or_NPD)
+			{	
 
-				if (G2[i]>C_hat2[c])
+				if (G2[i]>C_hat2[c2])
 				{
 					P2[i] = G2[i];
 				}
@@ -158,16 +141,49 @@ void MonteCarloLSM::Solve()
 			{
 				P2[i] = std::exp(-r*dt)*P2[i];
 			}
-			
 		}
 
 	}
-	price2 = std::exp(-r*dt)*std::accumulate(P2.begin(), P2.end(), 0.0)/(P2.size());
-	price = std::exp(-r*dt)*std::accumulate(P.begin(), P.end(), 0.0)/(P.size());
 	
+	price2 = std::accumulate(P2.begin(), P2.end(), 0.0)/(P2.size());
+	
+	if (PD_or_NPD)
+	{
+		price2 *= std::exp(-r*dt);
+		std::cout<<"OK";
+	}
+	else{
+		price2 *= std::exp(-mc_stocks->get_mu() * mc_stocks->get_maturity());
+	}
+	
+	price = std::exp(-r*dt)*std::accumulate(P.begin(), P.end(), 0.0)/(P.size());
+	std::cout<<price2<<std::endl;
 	price = price + (closedFormValue - price2);
 }
 
 
+std::vector<double> MonteCarloLSM::Regression_C_Hat(const std::vector<double>& X, const std::vector<double>& Y)
+{
+	
+	std::vector<std::vector<double>> L(LSM_Basis->get_matrix_L(X));
+	std::vector<std::vector<double>> LT;
+	std::vector<std::vector<double>> A;
+	std::vector<std::vector<double>> Ainv;
+	std::vector<std::vector<double>> C;
+	std::vector<double> Beta;	
+	std::vector<double> C_hat;
+	
+	transpose_matrix(L, LT);
+	mult_matrix(LT,L,A);
+	inv_sym_defpos(A, Ainv);
 
+	mult_matrix(Ainv,LT,C);		
+	mult_matrix_vect(C, Y, Beta);
+
+	mult_matrix_vect(L, Beta, C_hat);
+	
+	return C_hat;
+	
+	
+}
 

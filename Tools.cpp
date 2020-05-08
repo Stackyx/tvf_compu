@@ -47,7 +47,9 @@ void mult_matrix_vect(const std::vector<std::vector<double>>& M1, const std::vec
 
 void transpose_matrix(const std::vector<std::vector<double>>& M1, std::vector<std::vector<double>>& M2)
 {
+
 	M2.resize(M1[0].size(), std::vector<double>(M1.size()));
+
 	for (int i = 0; i<M1.size(); i++)
 	{
 		for (int j = 0; j<M1[0].size(); j++)

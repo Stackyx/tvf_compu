@@ -37,7 +37,7 @@ std::vector<double> PDCall::operator()(const std::vector<std::vector<std::vector
 
 }
 
-std::vector<double> PDCall::operator()(const std::vector<std::vector<std::vector<double>>>& x, const int& k)
+std::vector<double> PDCall::operator()(const std::vector<std::vector<std::vector<double>>>& x, const int& k) const
 {
 	
 	std::vector<double> Values;

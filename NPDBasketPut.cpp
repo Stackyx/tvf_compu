@@ -31,7 +31,7 @@ std::vector<double> NPDBasketPut::operator()(const std::vector<std::vector<std::
 
 			for (int j = 0; j < x[i].size(); j++)
 			{
-				m += NPD_weights[j]*x[i][j][0];
+				m += NPD_weights[j]*x[i][j][x[0][0].size()-1];
 			}
 			
 			Values[i] = (m < NPD_strike)? NPD_strike - m: 0;

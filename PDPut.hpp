@@ -12,7 +12,7 @@ public:
 	
 	std::vector<double> get_weights();
 	std::vector<double> operator()(const std::vector<std::vector<std::vector<double>>>& x) const;
-	std::vector<double> operator()(const std::vector<std::vector<std::vector<double>>>& x, const int& k);
+	std::vector<double> operator()(const std::vector<std::vector<std::vector<double>>>& x, const int& k) const;
 
 private:
 	std::vector<double> PD_weights;
