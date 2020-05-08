@@ -11,20 +11,19 @@ class MonteCarlo
 public:
 
 	MonteCarlo(Stocks* stocks, Payoff* payoff, llong n_sims);
+	MonteCarlo(Stocks* stocks, Payoff* payoff, llong n_sims, Payoff* payoff_CV, double closedFormValue);
 
 	virtual void Solve() = 0;
-	virtual void Solve(Payoff* MC_payoff_CV, double ClosedFormValue)=0;
 	
 	double get_price() const;
 
 	void set_N_sims(llong n_sims);
 protected:
 
-	double price;
+	double price, closedFormValue;
 	llong N_sims;
 
 	Stocks* mc_stocks;
-	Payoff* mc_payoff;
-
+	Payoff* mc_payoff, *MC_payoff_CV;
 };
 

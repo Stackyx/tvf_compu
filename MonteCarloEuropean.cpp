@@ -10,22 +10,17 @@ MonteCarloEuropean::MonteCarloEuropean(StocksFullPath* stocks, PathDependent* pa
 {
 }
 
-void MonteCarloEuropean::Solve()
+MonteCarloEuropean::MonteCarloEuropean(StocksTerminal* stocks, NonPathDependent* payoff, llong n_sims, NonPathDependent* payoff_CV, double closedFormValue)
+	: MonteCarlo(stocks, payoff, n_sims, payoff_CV, closedFormValue)
 {
-	std::vector<std::vector<std::vector<double>>> S(mc_stocks->Generate(N_sims));
-	std::vector<double> V((*mc_payoff)(S));
-
-	price = 0;
-
-	for (llong i = 0; i < V.size(); i++)
-	{
-		price += V[i] / V.size();
-	}
-
-	price *= std::exp(-mc_stocks->get_mu() * mc_stocks->get_maturity());
 }
 
-void MonteCarloEuropean::Solve(Payoff* MC_payoff_CV, double ClosedFormValue)
+MonteCarloEuropean::MonteCarloEuropean(StocksFullPath* stocks, PathDependent* payoff, llong n_sims, PathDependent* payoff_CV, double closedFormValue)
+	: MonteCarlo(stocks, payoff, n_sims, payoff_CV, closedFormValue)
+{
+}
+
+void MonteCarloEuropean::Solve()
 {
 	std::vector<std::vector<std::vector<double>>> S(mc_stocks->Generate(N_sims));
 	std::vector<double> V((*mc_payoff)(S));
@@ -43,7 +38,7 @@ void MonteCarloEuropean::Solve(Payoff* MC_payoff_CV, double ClosedFormValue)
 	price *= std::exp(-mc_stocks->get_mu() * mc_stocks->get_maturity());
 	price2 *= std::exp(-mc_stocks->get_mu() * mc_stocks->get_maturity());
 	
-	price = price + (ClosedFormValue - price2);
+	price = price + (closedFormValue - price2);
 }
 
 
