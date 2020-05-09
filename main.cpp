@@ -188,7 +188,8 @@ int main()
 
 		StocksFullPath* stocksF = new StocksStandardFullPath(biv_norm, 100, mu, 1, 10);
 		MonteCarlo* mc_solver_fp = new MonteCarloLSM(stocksF, call_payoff_PD, n_simu, base);
-
+		mc_solver_fp->Solve();
+		std::cout << "ok" << std::endl;
 		// --- MC Terminal with Antitethic variance reduction
 
 		StocksFullPath* stocksF2 = new StocksAntitheticFullPath(biv_norm, 100, mu, 1, 10, antithetic_function);
@@ -204,10 +205,10 @@ int main()
 		StocksFullPath* stocksF6 = new StocksAntitheticFullPath(biv_norm, 100, mu, 1, 10, antithetic_function);
 		MonteCarlo* mc_solver_anti_CV_fp = new MonteCarloLSM(stocksF6, call_payoff_PD, llong(n_simu / 2), base, Call_clasic, prix_bs);
 
-		Simulation* MC_simul_fp = new Simulation(mc_solver);
-		Simulation* MC_simul_antithetic_fp = new Simulation(mc_solver_quasi);
-		Simulation* MC_simul_CV_fp = new Simulation(mc_solver_antithetic);
-		Simulation* MC_simul_anti_CV_fp = new Simulation(mc_solver_CV);
+		Simulation* MC_simul_fp = new Simulation(mc_solver_fp);
+		Simulation* MC_simul_antithetic_fp = new Simulation(mc_solver_CV_fp);
+		Simulation* MC_simul_CV_fp = new Simulation(mc_solver_CV_fp);
+		Simulation* MC_simul_anti_CV_fp = new Simulation(mc_solver_anti_CV_fp);
 
 		if (true) {
 			MC_simul_fp->variance_by_sims(150, { 10, 50, 100, 250, 500, 1000, 2000, 5000, 10000 }, "..\\Graphs\\Variance-BasketCall-LSM\\var_MC_simul_standard.csv");
