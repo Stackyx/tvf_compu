@@ -1,5 +1,6 @@
 #include "StocksAntitheticFullPath.hpp"
 #include <cmath>
+#include <iostream>
 StocksAntitheticFullPath::StocksAntitheticFullPath(ContinuousGenerator* gen, double s0, double mu, double maturity, llong n_steps, R3R1Function* Transform)
 	: StocksFullPath(gen, s0, mu, maturity, n_steps), Transform(Transform)
 {
@@ -19,13 +20,15 @@ std::vector<std::vector<std::vector<double>>> StocksAntitheticFullPath::Generate
 	(*Transform)(W_transform, W, 0, 1);
 
 	S.resize(n_sims*2, std::vector<std::vector<double>>(W[0].size(), std::vector<double>(N_steps)));
+	
+	
 
 	double dt = T / (N_steps - 1);
 	llong cpt_div = 0;
 	double divVal = 0;
 	llong cpt(0);
 
-	for (llong i = 0; i < n_sims; ++i)
+	for (llong i = 0; i < n_sims*2; ++i)
 	{
 		for (llong j = 0; j < W[0].size(); ++j)
 		{
@@ -55,23 +58,13 @@ std::vector<std::vector<std::vector<double>>> StocksAntitheticFullPath::Generate
 			for (llong j = 0; j < W[0].size(); j++)
 			{
 				S[i][j][z] = S[i][j][z - 1] + S[i][j][z - 1] * ((Mu)*dt + std::sqrt(dt) * W[cpt][j]) - divVal;
-				S[i][j][z] = S[i][j][z - 1] + S[i][j][z - 1] * ((Mu)*dt + std::sqrt(dt) * W_transform[cpt][j]) - divVal;
+				S[i+1][j][z] = S[i+1][j][z - 1] + S[i+1][j][z - 1] * ((Mu)*dt + std::sqrt(dt) * W_transform[cpt][j]) - divVal;
 			}
 			cpt += 1;
 		}
 		divVal = 0;
 	}
 
-	for (llong i = 0; i < n_sims*2; ++i)
-	{
-		for (llong j = 0; j < W[0].size(); ++j)
-		{
-			for (llong z = 0; z < N_steps; ++z)
-			{
-				S[i][j][z] = std::exp(S[i][j][z]);
-			}
-		}
-	}
 
 	return S;
 }
