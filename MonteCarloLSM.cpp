@@ -157,7 +157,7 @@ void MonteCarloLSM::Solve()
 	}
 	
 	price = std::exp(-r*dt)*std::accumulate(P.begin(), P.end(), 0.0)/(P.size());
-	std::cout<<price2<<std::endl;
+
 	price = price + (closedFormValue - price2);
 }
 

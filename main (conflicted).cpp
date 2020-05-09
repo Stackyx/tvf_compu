@@ -186,44 +186,61 @@ int main()
 
 		// --- Standard MC Terminal
 
-		StocksFullPath* stocksF = new StocksStandardFullPath(biv_norm, 100, mu, 1, 12);
+		StocksFullPath* stocksF = new StocksStandardFullPath(biv_norm, 100, mu, 1, 100);
 		MonteCarlo* mc_solver_fp = new MonteCarloLSM(stocksF, call_payoff_PD, n_simu, base);
+
+
+		std::vector<llong> n_sims_MC = { 10, 20 }; //{ 10, 50, 100, 250, 500, 1000, 2000, 5000, 10000 };
+		llong n_sim_var = 100;
+		double E = 0;
+		double V = 0;
+
+		E = 0;
+		V = 0;
+
+		mc_solver_fp->set_N_sims(500);
+
+		llong n_sim_exp = 200;
+
+		for (llong j = 0; j < n_sim_exp;++j)
+		{
+			mc_solver_fp->Solve();
+			E += mc_solver_fp->get_price()/n_sim_exp;
+		}
+
+		for (llong z = 0; z < n_var; ++z)
+		{
+			mc_solver_fp->Solve();
+			V += (mc_solver_fp->get_price() - E)*(mc_solver_fp->get_price() - E)/n_var;
+		}
+
+		std::cout << V << std::endl;
 
 		// --- MC Terminal with Antitethic variance reduction
 
-		StocksFullPath* stocksF2 = new StocksAntitheticFullPath(biv_norm, 100, mu, 1, 12, antithetic_function);
+		StocksFullPath* stocksF2 = new StocksAntitheticFullPath(biv_norm, 100, mu, 1, 100, antithetic_function);
 		MonteCarlo* mc_solver_antithetic_fp = new MonteCarloLSM(stocksF2, call_payoff_PD, llong(n_simu / 2), base);
 
 		// --- MC Terminal with Control Variate variance reduction
 
-		StocksFullPath* stocksF4 = new StocksStandardFullPath(biv_norm, 100, mu, 1, 12);
+		StocksFullPath* stocksF4 = new StocksStandardFullPath(biv_norm, 100, mu, 1, 100);
 		MonteCarlo* mc_solver_CV_fp = new MonteCarloLSM(stocksF4, call_payoff_PD, llong(n_simu / 2), base, Call_clasic, prix_bs);
 
 		// --- MC Terminal with Antithetic and Control Variate variance reduction
 
-		StocksFullPath* stocksF6 = new StocksAntitheticFullPath(biv_norm, 100, mu, 1, 12, antithetic_function);
+		StocksFullPath* stocksF6 = new StocksAntitheticFullPath(biv_norm, 100, mu, 1, 100, antithetic_function);
 		MonteCarlo* mc_solver_anti_CV_fp = new MonteCarloLSM(stocksF6, call_payoff_PD, llong(n_simu / 2), base, Call_clasic, prix_bs);
 
 		Simulation* MC_simul_fp = new Simulation(mc_solver_fp);
-		Simulation* MC_simul_antithetic_fp = new Simulation(mc_solver_antithetic_fp);
+		Simulation* MC_simul_antithetic_fp = new Simulation(mc_solver_CV_fp);
 		Simulation* MC_simul_CV_fp = new Simulation(mc_solver_CV_fp);
 		Simulation* MC_simul_anti_CV_fp = new Simulation(mc_solver_anti_CV_fp);
 
-		mc_solver_fp->Solve();
-		std::cout << mc_solver_fp->get_price() << std::endl;
-		mc_solver_antithetic_fp->Solve();
-		std::cout << mc_solver_antithetic_fp->get_price() << std::endl;
-		mc_solver_CV_fp->Solve();
-		std::cout << mc_solver_CV_fp->get_price() << std::endl;
-		mc_solver_anti_CV_fp->Solve();
-		std::cout << mc_solver_anti_CV_fp->get_price() << std::endl;
-
-
-		if (true) {
-			//MC_simul_fp->variance_by_sims(150, { 50, 100, 250, 500, 1000, 2000, 5000, 10000 }, "..\\Graphs\\Variance-BasketCall-LSM\\var_MC_simul_standard.csv");
-			//MC_simul_antithetic_fp->variance_by_sims(150, {25, 50, 125, 250, 500, 1000, 2500, 5000 }, "..\\Graphs\\Variance-BasketCall-LSM\\var_MC_anti.csv");
-			//MC_simul_CV_fp->variance_by_sims(150, { 50, 100, 250, 500, 1000, 2000, 5000, 10000 }, "..\\Graphs\\Variance-BasketCall-LSM\\var_MC_simul_standard_cv.csv");
-			MC_simul_anti_CV_fp->variance_by_sims(150, {250, 500, 1000, 2500, 5000 }, "..\\Graphs\\Variance-BasketCall-LSM\\var_MC_simul_anti_cv.csv");
+		if (false) {
+			MC_simul_fp->variance_by_sims(150, { 10, 50, 100, 250, 500, 1000, 2000, 5000, 10000 }, "..\\Graphs\\Variance-BasketCall-LSM\\var_MC_simul_standard.csv");
+			MC_simul_antithetic_fp->variance_by_sims(150, { 10, 50, 100, 250, 500, 1000, 2000, 5000, 10000 }, "..\\Graphs\\Variance-BasketCall-LSM\\var_MC_anti.csv");
+			MC_simul_CV_fp->variance_by_sims(150, { 5, 25, 50, 125, 250, 500, 1000, 2500, 5000 }, "..\\Graphs\\Variance-BasketCall-LSM\\var_MC_simul_standard_cv.csv");
+			MC_simul_anti_CV_fp->variance_by_sims(150, { 5, 25, 50, 125, 250, 500, 1000, 2500, 5000 }, "..\\Graphs\\Variance-BasketCall-LSM\\var_MC_simul_anti_cv.csv");
 		}
 
 		// --- MC Terminal with Quasi random numbers
@@ -255,6 +272,7 @@ int main()
 	
 	return 0;
 }
+
 
 // void display_mat(const std::vector<std::vector<double>>& A)
 // {
