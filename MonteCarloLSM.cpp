@@ -26,7 +26,7 @@ void MonteCarloLSM::Solve()
 {
 	
 	std::vector<std::vector<std::vector<double>>> S(mc_stocks->Generate(N_sims));
-	
+
 	std::vector<double> P((*mc_payoff)(S, S[0][0].size()-1));
 	std::vector<double> itm_path(P.size());
 	std::vector<double> Weights(mc_payoff->get_weights());
@@ -150,14 +150,12 @@ void MonteCarloLSM::Solve()
 	if (PD_or_NPD)
 	{
 		price2 *= std::exp(-r*dt);
-		std::cout<<"OK";
 	}
 	else{
 		price2 *= std::exp(-mc_stocks->get_mu() * mc_stocks->get_maturity());
 	}
 	
 	price = std::exp(-r*dt)*std::accumulate(P.begin(), P.end(), 0.0)/(P.size());
-
 	price = price + (closedFormValue - price2);
 }
 

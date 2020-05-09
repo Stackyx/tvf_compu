@@ -193,7 +193,8 @@ int main()
 
 		StocksFullPath* stocksF2 = new StocksAntitheticFullPath(biv_norm, 100, mu, 1, 12, antithetic_function);
 		MonteCarlo* mc_solver_antithetic_fp = new MonteCarloLSM(stocksF2, call_payoff_PD, llong(n_simu / 2), base);
-
+		MonteCarlo* mc = new MonteCarloEuropean(stocksF2, call_payoff_PD, llong(n_simu / 2));
+		
 		// --- MC Terminal with Control Variate variance reduction
 
 		StocksFullPath* stocksF4 = new StocksStandardFullPath(biv_norm, 100, mu, 1, 12);
@@ -209,21 +210,24 @@ int main()
 		Simulation* MC_simul_CV_fp = new Simulation(mc_solver_CV_fp);
 		Simulation* MC_simul_anti_CV_fp = new Simulation(mc_solver_anti_CV_fp);
 
-		mc_solver_fp->Solve();
-		std::cout << mc_solver_fp->get_price() << std::endl;
+		// mc_solver_fp->Solve();
+		// std::cout << mc_solver_fp->get_price() << std::endl;
 		mc_solver_antithetic_fp->Solve();
+		// mc->Solve();
 		std::cout << mc_solver_antithetic_fp->get_price() << std::endl;
-		mc_solver_CV_fp->Solve();
-		std::cout << mc_solver_CV_fp->get_price() << std::endl;
-		mc_solver_anti_CV_fp->Solve();
-		std::cout << mc_solver_anti_CV_fp->get_price() << std::endl;
+		// std::cout << mc->get_price() << std::endl;
+
+		// mc_solver_CV_fp->Solve();
+		// std::cout << mc_solver_CV_fp->get_price() << std::endl;
+		// mc_solver_anti_CV_fp->Solve();
+		// std::cout << mc_solver_anti_CV_fp->get_price() << std::endl;
 
 
 		if (true) {
 			//MC_simul_fp->variance_by_sims(150, { 50, 100, 250, 500, 1000, 2000, 5000, 10000 }, "..\\Graphs\\Variance-BasketCall-LSM\\var_MC_simul_standard.csv");
 			//MC_simul_antithetic_fp->variance_by_sims(150, {25, 50, 125, 250, 500, 1000, 2500, 5000 }, "..\\Graphs\\Variance-BasketCall-LSM\\var_MC_anti.csv");
 			//MC_simul_CV_fp->variance_by_sims(150, { 50, 100, 250, 500, 1000, 2000, 5000, 10000 }, "..\\Graphs\\Variance-BasketCall-LSM\\var_MC_simul_standard_cv.csv");
-			MC_simul_anti_CV_fp->variance_by_sims(150, {250, 500, 1000, 2500, 5000 }, "..\\Graphs\\Variance-BasketCall-LSM\\var_MC_simul_anti_cv.csv");
+			// MC_simul_anti_CV_fp->variance_by_sims(150, {250, 500, 1000, 2500, 5000 }, "..\\Graphs\\Variance-BasketCall-LSM\\var_MC_simul_anti_cv.csv");
 		}
 
 		// --- MC Terminal with Quasi random numbers

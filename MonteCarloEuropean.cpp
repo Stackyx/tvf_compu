@@ -1,4 +1,5 @@
 #include "MonteCarloEuropean.hpp"
+#include "Tools.hpp"
 
 MonteCarloEuropean::MonteCarloEuropean(StocksTerminal* stocks, NonPathDependent* payoff, llong n_sims)
 	: MonteCarlo(stocks, payoff, n_sims)
@@ -23,6 +24,7 @@ MonteCarloEuropean::MonteCarloEuropean(StocksFullPath* stocks, PathDependent* pa
 void MonteCarloEuropean::Solve()
 {
 	std::vector<std::vector<std::vector<double>>> S(mc_stocks->Generate(N_sims));
+	
 	std::vector<double> V((*mc_payoff)(S));
 	std::vector<double> V_CV((*MC_payoff_CV)(S));
 
@@ -32,6 +34,7 @@ void MonteCarloEuropean::Solve()
 	for (llong i = 0; i < V.size(); i++)
 	{
 		price += V[i] / V.size();
+		std::cout<<"price "<< V[i]<<", spot "<<S[i][0][S[0][0].size()-1]*0.5 + 0.5 * S[i][1][S[0][0].size()-1]<<std::endl;
 		price2 += V_CV[i] / V_CV.size();
 	}
 
