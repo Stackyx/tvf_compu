@@ -8,10 +8,10 @@ class BasisLaguerre : public Basis
 {
 	
 public:
-	BasisLaguerre(int number);
+	BasisLaguerre(llong number);
 	
-	virtual double get_Lk(const double& X);
-	double get_Lk(const double& X, int k);
+	virtual double get_Lk(double X);
+	double get_Lk(double X, llong k);
 	virtual std::vector<std::vector<double>> get_matrix_L(const std::vector<double>& X);
 
 };

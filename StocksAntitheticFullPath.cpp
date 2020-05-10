@@ -6,7 +6,7 @@ StocksAntitheticFullPath::StocksAntitheticFullPath(ContinuousGenerator* gen, dou
 {
 }
 
-StocksAntitheticFullPath::StocksAntitheticFullPath(ContinuousGenerator* gen, double s0, double mu, double maturity, R3R1Function* Transform, std::vector<double> dividends, std::vector<double> date_dividends, llong n_steps)
+StocksAntitheticFullPath::StocksAntitheticFullPath(ContinuousGenerator* gen, double s0, double mu, double maturity, R3R1Function* Transform, const std::vector<double>& dividends, const std::vector<double>& date_dividends, llong n_steps)
 	: StocksFullPath(gen, s0, mu, maturity, dividends, date_dividends, n_steps), Transform(Transform)
 {
 }

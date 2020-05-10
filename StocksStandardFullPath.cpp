@@ -6,7 +6,7 @@ StocksStandardFullPath::StocksStandardFullPath(ContinuousGenerator* gen, double 
 {
 }
 
-StocksStandardFullPath::StocksStandardFullPath(ContinuousGenerator* gen, double s0, double mu, double maturity, std::vector<double> dividends, std::vector<double> date_dividends, llong n_steps)
+StocksStandardFullPath::StocksStandardFullPath(ContinuousGenerator* gen, double s0, double mu, double maturity, const std::vector<double>& dividends, const std::vector<double>& date_dividends, llong n_steps)
 	: StocksFullPath(gen, s0, mu, maturity, dividends, date_dividends, n_steps)
 {
 }
