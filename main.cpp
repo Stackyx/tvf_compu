@@ -81,8 +81,8 @@ int main()
 		ClosedForm* call_payoff_CF = new CFCall(100);
 		double prix_bs = (*call_payoff_CF)(100, 0 ,1,0.2);
 		double prix_bs_div = (*call_payoff_CF)(93, 0 ,1,0.2);
-		NonPathDependent* Call_clasic = new NPDCall(100);
-		PathDependent* Call_clasic_PD = new PDCall(100);
+		NonPathDependent* Call_clasic = new NPDCall(100, weights);
+		PathDependent* Call_clasic_PD = new PDCall(100, weights);
 		
 		// --- Standard MC Terminal
 
@@ -212,15 +212,15 @@ int main()
 
 		// mc_solver_fp->Solve();
 		// std::cout << mc_solver_fp->get_price() << std::endl;
-		mc_solver_antithetic_fp->Solve();
+		// mc_solver_antithetic_fp->Solve();
 		// mc->Solve();
-		std::cout << mc_solver_antithetic_fp->get_price() << std::endl;
+		// std::cout << mc_solver_antithetic_fp->get_price() << std::endl;
 		// std::cout << mc->get_price() << std::endl;
 
-		// mc_solver_CV_fp->Solve();
-		// std::cout << mc_solver_CV_fp->get_price() << std::endl;
-		// mc_solver_anti_CV_fp->Solve();
-		// std::cout << mc_solver_anti_CV_fp->get_price() << std::endl;
+		mc_solver_CV_fp->Solve();
+		std::cout << mc_solver_CV_fp->get_price() << std::endl;
+		mc_solver_anti_CV_fp->Solve();
+		std::cout << mc_solver_anti_CV_fp->get_price() << std::endl;
 
 
 		if (true) {
