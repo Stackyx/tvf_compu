@@ -13,7 +13,7 @@ std::vector<double> NullPayoff::operator()(const std::vector<std::vector<std::ve
 	return Values;
 }
 
-std::vector<double> NullPayoff::operator()(const std::vector<std::vector<std::vector<double>>>& x, const int& k) const
+std::vector<double> NullPayoff::operator()(const std::vector<std::vector<std::vector<double>>>& x, llong k) const
 {
 
 	std::vector<double> Values(x.size());
