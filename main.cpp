@@ -27,10 +27,10 @@
 #include "NPDBasketCall.hpp"
 #include "NPDBasketPut.hpp"
 #include "PathDependent.hpp"
-#include "PDBasketCall.hpp"
 #include "CFCall.hpp"
 #include "CFPut.hpp"
 #include "NPDCall.hpp"
+#include "NPDPut.hpp"
 #include "PDCall.hpp"
 
 #include "MonteCarloEuropean.hpp"
@@ -72,16 +72,16 @@ int main()
 
 		llong n_simu = 5000;
 
-		NonPathDependent* call_payoff = new NPDBasketCall(100, weights);
-		NonPathDependent* put_payoff = new NPDBasketPut(100, weights);
+		NonPathDependent* call_payoff = new NPDCall(100, weights); //si weights alors basket
+		NonPathDependent* put_payoff = new NPDPut(100, weights);
 		PathDependent* call_payoff_PD = new PDCall(100, weights);
 
 		R3R1Function* antithetic_function = new StandardAntithetic();
 
 		ClosedForm* call_payoff_CF = new CFCall(100);
-		double prix_bs = (*call_payoff_CF)(100, 0 ,1,0.2);
-		double prix_bs_div = (*call_payoff_CF)(93, 0 ,1,0.2);
-		NonPathDependent* Call_clasic = new NPDCall(100);
+		double prix_bs = (*call_payoff_CF)(100, 0 ,1,std::sqrt(cov[0][0]));
+		// double prix_bs_div = (*call_payoff_CF)(93, 0 ,1,0.2);//uniquement utile pour control d'un stock avec 7 de div cumulé et 0 de mu
+		NonPathDependent* Call_clasic = new NPDCall(100);//si pas weights alors c'est un call classic sur le premier stock path
 		PathDependent* Call_clasic_PD = new PDCall(100);
 		
 		// --- Standard MC Terminal
@@ -198,7 +198,7 @@ int main()
 		// --- MC Terminal with Control Variate variance reduction
 
 		StocksFullPath* stocksF4 = new StocksStandardFullPath(biv_norm, 100, mu, 1, 12);
-		MonteCarlo* mc_solver_CV_fp = new MonteCarloLSM(stocksF4, call_payoff_PD, llong(n_simu / 2), base, Call_clasic, prix_bs);
+		MonteCarlo* mc_solver_CV_fp = new MonteCarloLSM(stocksF4, call_payoff_PD, llong(n_simu), base, Call_clasic, prix_bs);
 
 		// --- MC Terminal with Antithetic and Control Variate variance reduction
 
@@ -213,9 +213,9 @@ int main()
 		// mc_solver_fp->Solve();
 		// std::cout << mc_solver_fp->get_price() << std::endl;
 		// mc_solver_antithetic_fp->Solve();
-		mc_solver_fp->Solve();
+		// mc_solver_fp->Solve();
 		// std::cout << mc_solver_antithetic_fp->get_price() << std::endl;
-		std::cout << mc_solver_fp->get_price() << std::endl;
+		// std::cout << mc_solver_fp->get_price() << std::endl;
 
 		// mc_solver_CV_fp->Solve();
 		// std::cout << mc_solver_CV_fp->get_price() << std::endl;
@@ -251,6 +251,24 @@ int main()
 		//StocksFullPath* stocksF8 = new StocksAntitheticFullPath(biv_norm3, 100, mu, 1, 10, antithetic_function);
 		//MonteCarlo* mc_simul_quasi_anti_CV = new MonteCarloLSM(stocksF8, call_payoff_PD, llong(n_simu / 2), base, Call_clasic, prix_bs);
 
+		if(false)
+		{
+			
+			PathDependent* basket_call_payoff_PD = new PDCall(100, weights);
+			
+			ClosedForm* call_payoff_CF2 = new CFCall(100);
+			double prix_bs = (*call_payoff_CF2)(100, 0 ,1,std::sqrt(cov[0][0]));
+			NonPathDependent* Call_clasic_1asset = new NPDCall(100);
+			//ici on control avec un call classic sur la premiere path 
+			//ainsi plus le payoff qu'on estime en proche du call sur le premier asset alors plus on a un control variate proche de ce que l'on cherche
+			
+			StocksFullPath* stocksF00 = new StocksStandardFullPath(biv_norm, 100, mu, 1, 12);
+			MonteCarlo* mc_solver_CV_fp_test = new MonteCarloLSM(stocksF00, basket_call_payoff_PD, llong(n_simu), base, Call_clasic_1asset, prix_bs);
+			
+			mc_solver_CV_fp_test->Solve();
+			std::cout << mc_solver_CV_fp_test->get_price() << std::endl;
+			
+		}
 	}
 	catch (std::exception & e)
 	{
@@ -305,7 +323,7 @@ void test_functions()
 	std::cout << "----- Test Basket Payoff ------" << std::endl;
 
 	std::vector<double> weights = { 0.5, 0.5 };
-	Payoff* V2 = new NPDBasketCall(100, weights);
+	Payoff* V2 = new NPDCall(100, weights);
 
 	/*std::vector<double> CallBkt = (*V2)(S);
 
