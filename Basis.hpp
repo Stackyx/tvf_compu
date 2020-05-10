@@ -5,17 +5,19 @@
 #include <vector>
 #include <iostream>
 
+typedef unsigned long long llong;
+
 class Basis
 {
 public:
 	
-	Basis(int number);
+	Basis(llong number);
 	
-	virtual double get_Lk(const double& X) = 0;
+	virtual double get_Lk(double X) = 0;
 	virtual std::vector<std::vector<double>> get_matrix_L(const std::vector<double>& X) = 0;
 	
 protected:
-	int B_nb;
+	llong B_nb;
 };
 
 #endif

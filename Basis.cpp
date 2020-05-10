@@ -1,6 +1,6 @@
 #include "Basis.hpp"
 
-Basis::Basis(int number)
+Basis::Basis(llong number)
 	:B_nb(number)
 {
 

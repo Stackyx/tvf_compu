@@ -1,15 +1,15 @@
 #include "BasisLaguerre.hpp"
 
-BasisLaguerre::BasisLaguerre(int number)
+BasisLaguerre::BasisLaguerre(llong number)
 	:Basis(number)
 {
 }
 
-double BasisLaguerre::get_Lk(const double& X)
+double BasisLaguerre::get_Lk(double X)
 {
 
 	double L = 0;
-	for (int i = 0; i<=B_nb; ++i)
+	for (llong i = 0; i<=B_nb; ++i)
 	{
 		L += factorial(B_nb)/(factorial(i)*factorial(B_nb-i)) * std::pow(-1.0, i)/factorial(i) * std::pow(X, i);
 
@@ -18,11 +18,11 @@ double BasisLaguerre::get_Lk(const double& X)
 	return L;
 }
 
-double BasisLaguerre::get_Lk(const double& X, int k)
+double BasisLaguerre::get_Lk(double X, llong k)
 {
 
 	double L = 0;
-	for (int i = 0; i<=k; ++i)
+	for (llong i = 0; i<=k; ++i)
 	{
 		L += factorial(k)/(factorial(i)*factorial(k-i)) * std::pow(-1.0, i)/factorial(i) * std::pow(X, i);
 
@@ -37,9 +37,9 @@ std::vector<std::vector<double>> BasisLaguerre::get_matrix_L(const std::vector<d
 	std::vector<std::vector<double>> L;
 	L.resize(X.size(), std::vector<double>(B_nb+1));
 
-	for(int i = 0; i<X.size();++i)
+	for(llong i = 0; i<X.size();++i)
 	{
-		for(int j = 0; j<=B_nb;++j)
+		for(llong j = 0; j<=B_nb;++j)
 		{
 			L[i][j] = get_Lk(X[i], j);
 			
