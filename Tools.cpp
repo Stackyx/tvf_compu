@@ -10,11 +10,11 @@ void mult_matrix(const std::vector<std::vector<double>>& M1, const std::vector<s
 	
 	M3.resize(M1.size(), std::vector<double>(M2[0].size())); 
 	
-	for (int i=0; i<M1.size();i++)
+	for (llong i=0; i<M1.size();i++)
 	{
-		for(int j=0; j< M2[0].size();j++)
+		for(llong j=0; j< M2[0].size();j++)
 		{
-			for(int k=0; k<M1[0].size(); k++)
+			for(llong k=0; k<M1[0].size(); k++)
 			{
 				M3[i][j] += M1[i][k] * M2[k][j];
 			}
@@ -33,9 +33,9 @@ void mult_matrix_vect(const std::vector<std::vector<double>>& M1, const std::vec
 	
 	V2.resize(M1.size()); 
 	
-	for (int i=0; i<M1.size();i++)
+	for (llong i=0; i<M1.size();i++)
 	{
-		for(int j=0; j< M1[0].size();j++)
+		for(llong j=0; j< M1[0].size();j++)
 		{
 				V2[i] += M1[i][j] * V1[j];
 		}
@@ -49,9 +49,9 @@ void transpose_matrix(const std::vector<std::vector<double>>& M1, std::vector<st
 
 	M2.resize(M1[0].size(), std::vector<double>(M1.size()));
 
-	for (int i = 0; i<M1.size(); i++)
+	for (llong i = 0; i<M1.size(); i++)
 	{
-		for (int j = 0; j<M1[0].size(); j++)
+		for (llong j = 0; j<M1[0].size(); j++)
 		{
 			M2[j][i] = M1[i][j];
 		}
@@ -61,7 +61,7 @@ void transpose_matrix(const std::vector<std::vector<double>>& M1, std::vector<st
 
 void Cholesky(std::vector<std::vector<double>>& A)
 {
-	long i, j, k;
+	llong i, j, k;
 	double sum;
 
 	if (A[0].size() != A.size()) throw("need square matrix");
@@ -79,7 +79,7 @@ void Cholesky(std::vector<std::vector<double>>& A)
 				if (sum <= 0.0)
 				{
 					std::cout<<sum;
-					throw("Cholesky failed.");
+					throw std::runtime_error("Cholesky failed.");
 				}
 				A[i][i] = sqrt(sum);
 			}
@@ -94,7 +94,7 @@ void Cholesky(std::vector<std::vector<double>>& A)
 //inverse matrix that is symetric define positive
 void inv_sym_defpos(const std::vector<std::vector<double>>& A, std::vector<std::vector<double>>& Ainv)
 {
-	long i, j, k;
+	llong i, j, k;
 	double sum;
 	
 	std::vector<std::vector<double>> A_copy(A);
@@ -126,7 +126,7 @@ void inv_sym_defpos(const std::vector<std::vector<double>>& A, std::vector<std::
 
 }
 
-int factorial(int n)
+llong factorial(llong n)
 {
     if(n > 1)
         return n * factorial(n - 1);
@@ -137,14 +137,14 @@ int factorial(int n)
 
 // Function to get cofactor of A[p][q] in temp[][]. n is current 
 // dimension of A[][] 
-void getCofactor(const std::vector<std::vector<double>>& A, std::vector<std::vector<double>>& temp, int p, int q, int n) 
+void getCofactor(const std::vector<std::vector<double>>& A, std::vector<std::vector<double>>& temp, llong p, llong q, llong n) 
 { 
-    int i = 0, j = 0; 
+    llong i = 0, j = 0; 
   
     // Looping for each element of the matrix 
-    for (int row = 0; row < n; row++) 
+    for (llong row = 0; row < n; row++) 
     { 
-        for (int col = 0; col < n; col++) 
+        for (llong col = 0; col < n; col++) 
         { 
             //  Copying into temporary matrix only those element 
             //  which are not in given row and column 
@@ -166,9 +166,9 @@ void getCofactor(const std::vector<std::vector<double>>& A, std::vector<std::vec
   
 /* Recursive function for finding determinant of matrix. 
    n is current dimension of A[][]. */
-double determinant(const std::vector<std::vector<double>>& A, int n) 
+double determinant(const std::vector<std::vector<double>>& A, llong n) 
 { 
-    int D = 0; // Initialize result 
+    double D = 0; // Initialize result 
   
     //  Base case : if matrix contains single element 
     if (n == 1) 
@@ -180,7 +180,7 @@ double determinant(const std::vector<std::vector<double>>& A, int n)
     double sign = 1.0;  // To store sign multiplier 
   
      // Iterate for each element of first row 
-    for (int f = 0; f < n; f++) 
+    for (llong f = 0; f < n; f++) 
     { 
         // Getting Cofactor of A[0][f] 
         getCofactor(A, temp, 0, f, n); 
@@ -204,13 +204,13 @@ void adjoint(const std::vector<std::vector<double>>& A, std::vector<std::vector<
     } 
   
     // temp is used to store cofactors of A[][] 
-    int sign = 1;
+    llong sign = 1;
 	std::vector<std::vector<double>> temp;
 	temp.resize(A.size()-1, std::vector<double>(A[0].size()-1));
   
-    for (int i=0; i<A.size(); i++) 
+    for (llong i=0; i<A.size(); i++) 
     { 
-        for (int j=0; j<A.size(); j++) 
+        for (llong j=0; j<A.size(); j++) 
         { 
 
             // Get cofactor of A[i][j] 
@@ -245,9 +245,9 @@ bool inverse(const std::vector<std::vector<double>>& A, std::vector<std::vector<
     adjoint(A, adj); 
 	inv.resize( A.size(), std::vector<double>(A.size()));
     // Find Inverse using formula "inverse(A) = adj(A)/det(A)" 
-    for (int i=0; i<A.size(); i++) 
+    for (llong i=0; i<A.size(); i++) 
 	{
-        for (int j=0; j<A.size(); j++) 
+        for (llong j=0; j<A.size(); j++) 
         {
 			inv[i][j] = adj[i][j]/det; 
 		}
@@ -265,9 +265,9 @@ double normalCDF(double value)
 //Display a matrix
 void display_mat(const std::vector<std::vector<double>>& A)
 {
-	for (int ii =0; ii<A.size();++ii)
+	for (llong ii =0; ii<A.size();++ii)
 	{
-		for(int jj = 0; jj<A[0].size(); ++jj)
+		for(llong jj = 0; jj<A[0].size(); ++jj)
 		{
 			std::cout<<A[ii][jj]<<", ";
 		}
@@ -279,7 +279,7 @@ void display_mat(const std::vector<std::vector<double>>& A)
 //Display a vector
 void display_vect(const std::vector<double>& A)
 {
-	for (int ii =0; ii<A.size();++ii)
+	for (llong ii =0; ii<A.size();++ii)
 	{
 
 		std::cout<<A[ii]<<", ";

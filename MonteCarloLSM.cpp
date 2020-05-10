@@ -45,11 +45,11 @@ void MonteCarloLSM::Solve()
 
 	price = 0;
 	double price2 = 0;
-	size_t nb_steps = S[0][0].size();
+	llong nb_steps = S[0][0].size();
 	double dt = (mc_stocks->get_maturity())/(nb_steps-1);
 	double r = mc_stocks->get_mu();
 
-	for (int k = nb_steps-2; k>0; k--)
+	for (llong k = nb_steps-2; k>0; k--)
 	{
 		std::vector<double> X;
 		std::vector<double> Y;
@@ -57,7 +57,7 @@ void MonteCarloLSM::Solve()
 		std::vector<double> X2;
 		std::vector<double> Y2;
 		
-		for(int i = 0; i<P.size(); i++)
+		for(llong i = 0; i<P.size(); i++)
 		{
 			
 			//seperate the path in the money
@@ -65,7 +65,7 @@ void MonteCarloLSM::Solve()
 			{
 				itm_path[i] = 1;
 				double xi = 0;
-				for (int j = 0; j<Weights.size(); j++)
+				for (llong j = 0; j<Weights.size(); j++)
 				{
 					xi += Weights[j]*S[i][j][k];
 				}
@@ -82,7 +82,7 @@ void MonteCarloLSM::Solve()
 			{
 				itm_path2[i] = 1;
 				double xi = 0;
-				for (int j = 0; j<Weights2.size(); j++)
+				for (llong j = 0; j<Weights2.size(); j++)
 				{
 					xi += Weights2[j]*S[i][j][k];
 				}
@@ -109,10 +109,10 @@ void MonteCarloLSM::Solve()
 		}
 		
 		
-		int c = 0;
-		int c2 = 0;
+		llong c = 0;
+		llong c2 = 0;
 		
-		for (int i = 0; i<P.size(); i++)
+		for (llong i = 0; i<P.size(); i++)
 		{
 			if (itm_path[i] == 1)
 			{

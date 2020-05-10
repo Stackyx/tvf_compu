@@ -7,15 +7,17 @@
 #include <stdexcept>
 #include <iostream>
 
+typedef unsigned long long llong;
+
 void mult_matrix(const std::vector<std::vector<double>>& M1, const std::vector<std::vector<double>>& M2, std::vector<std::vector<double>>& M3);
 void mult_matrix_vect(const std::vector<std::vector<double>>& M1, const std::vector<double>& V1, std::vector<double>& V2);
 void transpose_matrix(const std::vector<std::vector<double>>& M1, std::vector<std::vector<double>>& M2);
 void Cholesky(std::vector<std::vector<double>>& A);
 void inv_sym_defpos(const std::vector<std::vector<double>>& A, std::vector<std::vector<double>>& Ainv);
-int factorial(int n);
+llong factorial(llong n);
 
-void getCofactor(const std::vector<std::vector<double>>& A, std::vector<std::vector<double>>& temp, int p, int q, int n);
-double determinant(const std::vector<std::vector<double>>& A, int n);
+void getCofactor(const std::vector<std::vector<double>>& A, std::vector<std::vector<double>>& temp, llong p, llong q, llong n);
+double determinant(const std::vector<std::vector<double>>& A, llong n);
 void adjoint(const std::vector<std::vector<double>>& A, std::vector<std::vector<double>>& adj);
 bool inverse(const std::vector<std::vector<double>>& A, std::vector<std::vector<double>>& inv);
 
