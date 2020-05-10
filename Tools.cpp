@@ -61,7 +61,7 @@ void transpose_matrix(const std::vector<std::vector<double>>& M1, std::vector<st
 
 void Cholesky(std::vector<std::vector<double>>& A)
 {
-	llong i, j, k;
+	long long i, j, k;
 	double sum;
 
 	if (A[0].size() != A.size()) throw("need square matrix");
@@ -94,7 +94,7 @@ void Cholesky(std::vector<std::vector<double>>& A)
 //inverse matrix that is symetric define positive
 void inv_sym_defpos(const std::vector<std::vector<double>>& A, std::vector<std::vector<double>>& Ainv)
 {
-	llong i, j, k;
+	long long i, j, k;
 	double sum;
 	
 	std::vector<std::vector<double>> A_copy(A);

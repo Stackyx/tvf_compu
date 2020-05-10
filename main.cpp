@@ -213,9 +213,9 @@ int main()
 		// mc_solver_fp->Solve();
 		// std::cout << mc_solver_fp->get_price() << std::endl;
 		// mc_solver_antithetic_fp->Solve();
-		mc->Solve();
+		mc_solver_fp->Solve();
 		// std::cout << mc_solver_antithetic_fp->get_price() << std::endl;
-		std::cout << mc->get_price() << std::endl;
+		std::cout << mc_solver_fp->get_price() << std::endl;
 
 		// mc_solver_CV_fp->Solve();
 		// std::cout << mc_solver_CV_fp->get_price() << std::endl;
