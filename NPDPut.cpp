@@ -28,7 +28,12 @@ std::vector<double> NPDPut::operator()(const std::vector<std::vector<std::vector
 	for (int i = 0; i < x.size(); i++)
 	{
 
-		double m =  NPD_weights[0]*x[i][0][x[0][0].size()-1];
+		double m =  0;
+		
+		for (int j = 0; j<NPD_weights.size(); j++)
+		{
+			m+= NPD_weights[j]*x[i][j][x[0][j].size()-1];
+		}
 		
 		Values[i] = (m < NPD_strike)? NPD_strike - m: 0;
 	}
