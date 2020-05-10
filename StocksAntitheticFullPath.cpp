@@ -32,7 +32,7 @@ std::vector<std::vector<std::vector<double>>> StocksAntitheticFullPath::Generate
 	{
 		for (llong j = 0; j < W[0].size(); ++j)
 		{
-			// S[i][j][0] = std::log(S0);
+
 			S[i][j][0] = S0;
 		}
 	}

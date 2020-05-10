@@ -27,7 +27,6 @@ std::vector<std::vector<std::vector<double>>> StocksStandardFullPath::Generate(l
 	{
 		for (llong j = 0; j < W[0].size(); ++j)
 		{
-			// S[i][j][0] = std::log(S0);
 			S[i][j][0] = S0;
 		}
 	}
@@ -54,22 +53,6 @@ std::vector<std::vector<std::vector<double>>> StocksStandardFullPath::Generate(l
 		}
 		divVal = 0;
 	}
-
-	// for (llong i = 0; i < n_sims; ++i)
-	// {
-		// for (llong j = 0; j < W[0].size(); ++j)
-		// {
-			// for (llong z = 0; z < N_steps; ++z)
-			// {
-
-				// S[i][j][z] = std::exp(S[i][j][z]);
-				// if (z == N_steps - 1)
-				// {
-					// std::cout << S[i][j][z] << std::endl;
-				// }
-			// }
-		// }
-	// }
-
+	
 	return S;
 }
