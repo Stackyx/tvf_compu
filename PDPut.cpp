@@ -25,12 +25,12 @@ std::vector<double> PDPut::operator()(const std::vector<std::vector<std::vector<
 	std::vector<double> Values;
 	Values.resize(x.size());
 	
-	for (int i = 0; i < x.size(); i++)
+	for (llong i = 0; i < x.size(); i++)
 	{
 
 		double m =  0;
 		
-		for (int j = 0; j<PD_weights.size(); j++)
+		for (llong j = 0; j<PD_weights.size(); j++)
 		{
 			m+= PD_weights[j]*x[i][j][x[0][j].size()-1];
 		}
@@ -43,18 +43,18 @@ std::vector<double> PDPut::operator()(const std::vector<std::vector<std::vector<
 }
 
 
-std::vector<double> PDPut::operator()(const std::vector<std::vector<std::vector<double>>>& x, const int& k) const
+std::vector<double> PDPut::operator()(const std::vector<std::vector<std::vector<double>>>& x, llong k) const
 {
 	
 	std::vector<double> Values;
 	Values.resize(x.size());
 	
-	for (int i = 0; i < x.size(); i++)
+	for (llong i = 0; i < x.size(); i++)
 	{
 
 		double m =  0;
 		
-		for (int j = 0; j<PD_weights.size(); j++)
+		for (llong j = 0; j<PD_weights.size(); j++)
 		{
 			m+= PD_weights[j]*x[i][j][k];
 		}

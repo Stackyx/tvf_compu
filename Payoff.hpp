@@ -5,6 +5,8 @@
 #include <vector>
 #include <iostream>
 
+typedef unsigned long long llong;
+
 class Payoff
 {
 public:

@@ -25,12 +25,12 @@ std::vector<double> NPDCall::operator()(const std::vector<std::vector<std::vecto
 	std::vector<double> Values;
 	Values.resize(x.size());
 	
-	for (int i = 0; i < x.size(); i++)
+	for (llong i = 0; i < x.size(); i++)
 	{
 
 		double m =  0;
 		
-		for (int j = 0; j<NPD_weights.size(); j++)
+		for (llong j = 0; j<NPD_weights.size(); j++)
 		{
 			m+= NPD_weights[j]*x[i][j][x[0][j].size()-1];
 		}
