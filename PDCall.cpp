@@ -28,7 +28,12 @@ std::vector<double> PDCall::operator()(const std::vector<std::vector<std::vector
 	for (int i = 0; i < x.size(); i++)
 	{
 
-		double m =  PD_weights[0]*x[i][0][x[0][0].size()-1];
+		double m =  0;
+		
+		for (int j = 0; j<PD_weights.size(); j++)
+		{
+			m+= PD_weights[j]*x[i][j][x[0][j].size()-1];
+		}
 		
 		Values[i] = (m > PD_strike)? m - PD_strike : 0;
 	}
@@ -45,8 +50,12 @@ std::vector<double> PDCall::operator()(const std::vector<std::vector<std::vector
 	
 	for (int i = 0; i < x.size(); i++)
 	{
-
-		double m =  PD_weights[0]*x[i][0][k];
+		double m =  0;
+		
+		for (int j = 0; j<PD_weights.size(); j++)
+		{
+			m+= PD_weights[j]*x[i][j][k];
+		}
 		
 		Values[i] = (m > PD_strike)? m - PD_strike : 0;
 	}
