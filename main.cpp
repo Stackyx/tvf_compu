@@ -74,7 +74,7 @@ int main()
 
 		NonPathDependent* call_payoff = new NPDBasketCall(100, weights);
 		NonPathDependent* put_payoff = new NPDBasketPut(100, weights);
-		PathDependent* call_payoff_PD = new PDBasketCall(100, weights);
+		PathDependent* call_payoff_PD = new PDCall(100, weights);
 
 		R3R1Function* antithetic_function = new StandardAntithetic();
 
