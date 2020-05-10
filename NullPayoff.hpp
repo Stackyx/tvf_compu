@@ -4,12 +4,12 @@
 class NullPayoff : public NonPathDependent
 {
 public:
-	NullPayoff(double weights_size);
+	NullPayoff(llong weights_size);
 	std::vector<double> operator()(const std::vector<std::vector<std::vector<double>>>& x) const;
 	std::vector<double> operator()(const std::vector<std::vector<std::vector<double>>>& x, llong k) const;
 	std::vector<double> get_weights();
 	
 private:
-	double weights_sz;
+	llong weights_sz;
 };
 

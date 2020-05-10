@@ -13,7 +13,7 @@ public:
 	virtual std::vector<double> operator()(const std::vector<std::vector<std::vector<double>>>& x) const = 0;
 
 	virtual std::vector<double> get_weights();
-	virtual std::vector<double> operator()(const std::vector<std::vector<std::vector<double>>>& x, const int& k) const;
+	virtual std::vector<double> operator()(const std::vector<std::vector<std::vector<double>>>& x, llong k) const;
 };
 
 #endif

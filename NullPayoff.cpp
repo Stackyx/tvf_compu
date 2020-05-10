@@ -1,6 +1,6 @@
 #include "NullPayoff.hpp"
 
-NullPayoff::NullPayoff(double weights_size)
+NullPayoff::NullPayoff(llong weights_size)
 	:weights_sz(weights_size)
 {
 
