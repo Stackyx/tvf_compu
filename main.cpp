@@ -98,7 +98,7 @@ int main()
 		// --- MC Terminal with Control Variate variance reduction
 
 		StocksTerminal* stocksT4 = new StocksStandardTerminal(norm_standard, 100, mu, 1);
-		MonteCarlo* mc_solver_CV = new MonteCarloEuropean(stocksT4, call_payoff, llong(n_simu/2), Call_classic, prix_bs);
+		MonteCarlo* mc_solver_CV = new MonteCarloEuropean(stocksT4, call_payoff, n_simu, Call_classic, prix_bs);
 		
 		// --- MC Terminal with antithetic and quasi random numbers variance reduction
 
@@ -113,7 +113,7 @@ int main()
 		// --- MC Terminal  with Quasi random numbers and Control Variate variance reduction
 
 		StocksTerminal* stocksT7 = new StocksStandardTerminal(norm_quasi, 100, mu, 1);
-		MonteCarlo* mc_solver_quasi_CV = new MonteCarloEuropean(stocksT7, call_payoff, llong(n_simu/2), Call_classic, prix_bs);
+		MonteCarlo* mc_solver_quasi_CV = new MonteCarloEuropean(stocksT7, call_payoff, n_simu, Call_classic, prix_bs);
 
 		// --- MC Terminal  with Quasi random numbers anthitetic and Control Variate variance reduction
 
@@ -176,7 +176,7 @@ int main()
 
 				ContinuousGenerator* biv_norm_corr = new NormalMultiVariate(vdc, vdc2, 0, cov);
 				StocksTerminal* stocks_corr = new StocksStandardTerminal(biv_norm_corr, 100, mu, 1);
-				MonteCarlo* mc_solver_quasi_CV_corr = new MonteCarloEuropean(stocks_corr, call_payoff, llong(n_simu / 2), Call_classic, prix_bs);
+				MonteCarlo* mc_solver_quasi_CV_corr = new MonteCarloEuropean(stocks_corr, call_payoff, n_simu, Call_classic, prix_bs);
 
 				Simulation* MC_simul_corr = new Simulation(mc_solver_quasi_CV_corr);
 
@@ -205,17 +205,17 @@ int main()
 		
 		// --- MC Terminal with Quasi random numbers
 
-		StocksFullPath* stocksF3 = new StocksStandardFullPath(norm_quasi, 100, mu, 1, 10);
+		StocksFullPath* stocksF3 = new StocksStandardFullPath(norm_quasi, 100, mu, 1, 12);
 		MonteCarlo* mc_solver_quasi_fp = new MonteCarloLSM(stocksF3, call_payoff_PD, n_simu, base);
 
 		// --- MC Terminal with Control Variate variance reduction
 
 		StocksFullPath* stocksF4 = new StocksStandardFullPath(norm_standard, 100, mu, 1, 12);
-		MonteCarlo* mc_solver_CV_fp = new MonteCarloLSM(stocksF4, call_payoff_PD, llong(n_simu), base, Call_classic, prix_bs);
+		MonteCarlo* mc_solver_CV_fp = new MonteCarloLSM(stocksF4, call_payoff_PD, n_simu, base, Call_classic, prix_bs);
 
 		// --- MC Terminal with antithetic and quasi random numbers variance reduction
 
-		StocksFullPath* stocksF5 = new StocksAntitheticFullPath(norm_quasi, 100, mu, 1, 10, antithetic_function);
+		StocksFullPath* stocksF5 = new StocksAntitheticFullPath(norm_quasi, 100, mu, 1, 12, antithetic_function);
 		MonteCarlo* mc_solver_quasi_anti_fp = new MonteCarloLSM(stocksF5, call_payoff_PD, llong(n_simu / 2), base);
 
 		// --- MC Terminal with Antithetic and Control Variate variance reduction
@@ -225,12 +225,12 @@ int main()
 
 		// --- MC Terminal  with Quasi random numbers and Control Variate variance reduction
 
-		StocksFullPath* stocksF7 = new StocksStandardFullPath(norm_quasi, 100, mu, 1, 10);
-		MonteCarlo* mc_solver_quasi_CV_fp = new MonteCarloLSM(stocksF7, call_payoff_PD, llong(n_simu / 2), base, Call_classic, prix_bs);
+		StocksFullPath* stocksF7 = new StocksStandardFullPath(norm_quasi, 100, mu, 1, 12);
+		MonteCarlo* mc_solver_quasi_CV_fp = new MonteCarloLSM(stocksF7, call_payoff_PD, n_simu, base, Call_classic, prix_bs);
 
 		// --- MC Terminal  with Quasi random numbers anthitetic and Control Variate variance reduction
 
-		StocksFullPath* stocksF8 = new StocksAntitheticFullPath(norm_quasi, 100, mu, 1, 10, antithetic_function);
+		StocksFullPath* stocksF8 = new StocksAntitheticFullPath(norm_quasi, 100, mu, 1, 12, antithetic_function);
 		MonteCarlo* mc_simul_quasi_anti_CV_fp = new MonteCarloLSM(stocksF8, call_payoff_PD, llong(n_simu / 2), base, Call_classic, prix_bs);
 
 
