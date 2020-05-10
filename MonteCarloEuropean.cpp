@@ -31,12 +31,14 @@ void MonteCarloEuropean::Solve()
 	price = 0;
 	double price2 = 0;
 	
-	for (llong i = 0; i < V.size(); i++)
-	{
-		price += V[i] / V.size();
-		std::cout<<"price "<< V[i]<<", spot "<<S[i][0][S[0][0].size()-1]*0.5 + 0.5 * S[i][1][S[0][0].size()-1]<<std::endl;
-		price2 += V_CV[i] / V_CV.size();
-	}
+	price = std::accumulate(V.begin(), V.end(), 0.0)/(V.size());
+	price2 = std::accumulate(V_CV.begin(), V_CV.end(), 0.0)/(V_CV.size());
+	
+	// for (llong i = 0; i < V.size(); i++)
+	// {
+		// price += V[i] / V.size();
+		// price2 += V_CV[i] / V_CV.size();
+	// }
 
 	price *= std::exp(-mc_stocks->get_mu() * mc_stocks->get_maturity());
 	price2 *= std::exp(-mc_stocks->get_mu() * mc_stocks->get_maturity());
