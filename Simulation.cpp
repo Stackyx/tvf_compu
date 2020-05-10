@@ -42,7 +42,7 @@ void Simulation::compute_variance(llong n_sims)
 }
 
 
-std::vector<double> Simulation::expectation_by_sims(llong exp_simul, const std::vector<double>& mc_simul)
+std::vector<double> Simulation::expectation_by_sims(llong exp_simul, const std::vector<llong>& mc_simul)
 {
 	std::vector<double> E_arr(mc_simul.size());
 
@@ -57,7 +57,7 @@ std::vector<double> Simulation::expectation_by_sims(llong exp_simul, const std::
 }
 
 
-std::vector<double> Simulation::variance_by_sims(llong var_simul, const std::vector<double>& mc_simul)
+std::vector<double> Simulation::variance_by_sims(llong var_simul, const std::vector<llong>& mc_simul)
 {
 	std::vector<double> V_arr(mc_simul.size());
 
@@ -72,7 +72,7 @@ std::vector<double> Simulation::variance_by_sims(llong var_simul, const std::vec
 	return V_arr;
 }
 
-void Simulation::expectation_by_sims(llong exp_simul, const std::vector<double>& mc_simul, std::string fname)
+void Simulation::expectation_by_sims(llong exp_simul, const std::vector<llong>& mc_simul, std::string fname)
 {
 	std::ofstream f;
 	f.open(fname);
@@ -88,7 +88,7 @@ void Simulation::expectation_by_sims(llong exp_simul, const std::vector<double>&
 }
 
 
-void Simulation::variance_by_sims(llong var_simul, const std::vector<double>& mc_simul, std::string fname)
+void Simulation::variance_by_sims(llong var_simul, const std::vector<llong>& mc_simul, std::string fname)
 {
 	std::ofstream f;
 	f.open(fname);
