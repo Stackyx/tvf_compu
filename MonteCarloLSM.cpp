@@ -27,7 +27,26 @@ void MonteCarloLSM::Solve()
 	
 	std::vector<std::vector<std::vector<double>>> S(mc_stocks->Generate(N_sims));
 
+	// for (int i = 0;i<S.size(); ++i)
+	// {
+		// for (int j=0; j<S[0][0].size(); j++)
+		// {
+			// std::cout<<S[i][0][j]<<",";
+			
+		// }
+		// std::cout<<std::endl;
+	// }
+	
 	std::vector<double> P((*mc_payoff)(S, S[0][0].size()-1));
+	
+	// for (int i = 0;i<S.size(); ++i)
+	// {
+
+		// std::cout<<"Spot "<< 0.5*S[i][0][S[0][0].size()-1] + 0.5*S[i][1][S[0][0].size()-1]<<", price "<<P[i]<<std::endl;
+
+	// }
+	
+	
 	std::vector<double> itm_path(P.size());
 	std::vector<double> Weights(mc_payoff->get_weights());
 	
@@ -156,7 +175,7 @@ void MonteCarloLSM::Solve()
 	}
 	
 	price = std::exp(-r*dt)*std::accumulate(P.begin(), P.end(), 0.0)/(P.size());
-	
+	std::cout<<"Price "<<price<<", price CV "<<price2 <<", CF "<<closedFormValue<<std::endl;
 	price = price + (closedFormValue - price2);
 }
 
