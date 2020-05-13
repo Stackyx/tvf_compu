@@ -11,6 +11,7 @@
 #include "LinearCongruential.hpp"
 #include "EcuyerCombined.hpp"
 #include "VanDerCorput.hpp"
+#include "Sobol.hpp"
 
 #include "Normal.hpp"
 #include "NormalMultiVariate.hpp"
@@ -52,7 +53,9 @@ int main()
 
 		UniformGenerator* vdc = new VanDerCorput(1, 2);
 		UniformGenerator* vdc2 = new VanDerCorput(1, 3);
-
+		
+		UniformGenerator* sobol = new Sobol(1);
+		
 		double mu = 0./ 100.;
 		std::vector<double> weights = { 0.5, 0.5};
 
@@ -65,7 +68,8 @@ int main()
 
 		ContinuousGenerator* norm_standard = new NormalMultiVariate(ecuyer, 0, cov);
 		ContinuousGenerator* norm_quasi = new NormalMultiVariate(vdc, vdc2, 0, cov);
-
+		ContinuousGenerator* norm_quasi_sob = new NormalMultiVariate(sobol, 0, cov);
+		
 		std::cout << "----- MONTECARLO ------" << std::endl;
 
 		llong n_simu = 5000;
@@ -92,7 +96,7 @@ int main()
 
 		// --- MC Terminal with Quasi random numbers
 
-		StocksTerminal* stocksT3 = new StocksStandardTerminal(norm_quasi, 100, mu, 1);
+		StocksTerminal* stocksT3 = new StocksStandardTerminal(norm_quasi_sob, 100, mu, 1);
 		MonteCarlo* mc_solver_quasi = new MonteCarloEuropean(stocksT3, call_payoff, n_simu);
 
 		// --- MC Terminal with Control Variate variance reduction
@@ -130,7 +134,16 @@ int main()
 		Simulation* MC_simul_anti_CV = new Simulation(mc_solver_anti_CV);
 		Simulation* MC_simul_quasi_CV = new Simulation(mc_solver_quasi_CV);
 		Simulation* MC_simul_quasi_anti_CV = new Simulation(mc_simul_quasi_anti_CV);
-
+		
+		
+		// mc_solver->Solve();
+		// std::cout << "Standard : "<< mc_solver->get_price()<<std::endl;
+		// mc_solver_antithetic->Solve();
+		// std::cout << "Antitethic : "<< mc_solver_antithetic->get_price()<<std::endl;
+		// mc_solver_quasi->Solve();
+		// std::cout << "Quasi : "<< mc_solver_quasi->get_price()<<std::endl;
+		
+		
 		std::cout << "EXPECTATION AND VARIANCE IN FUNCTION OF N_SIMULATION of paths" << std::endl;
 
 		llong n_sims_var = 150;
@@ -138,7 +151,7 @@ int main()
 		std::vector<llong> n_sims_std = { 100, 250, 500, 1000, 2000, 5000, 7500, 10000 };
 		std::vector<llong> n_sims_anti = { 50, 125, 250, 500, 1000, 2500, 3750, 5000 };
 
-		if (true) {
+		if (false) {
 			MC_simul_standard->variance_by_sims(n_sims_var, n_sims_std, "..\\Graphs\\Variance-BasketCall\\var_MC_simul_standard_2A.csv");
 			MC_simul_quasi->variance_by_sims(n_sims_var, n_sims_std, "..\\Graphs\\Variance-BasketCall\\var_MC_simul_quasi_2A.csv");
 			MC_simul_standard_anti->variance_by_sims(n_sims_var, n_sims_anti, "..\\Graphs\\Variance-BasketCall\\var_MC_simul_standard_anti_2A.csv");
@@ -160,7 +173,7 @@ int main()
 
 		std::cout << "CV Var in function of Correlation" << std::endl;
 
-		if (true)
+		if (false)
 		{
 			std::vector<double> corr = { -0.999999, -0.999, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0,
 									0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.999, 0.999999};
@@ -205,7 +218,7 @@ int main()
 		
 		// --- MC Terminal with Quasi random numbers
 
-		StocksFullPath* stocksF3 = new StocksStandardFullPath(norm_quasi, 100, mu, 1, 12);
+		StocksFullPath* stocksF3 = new StocksStandardFullPath(norm_quasi_sob, 100, mu, 1, 12);
 		MonteCarlo* mc_solver_quasi_fp = new MonteCarloLSM(stocksF3, call_payoff_PD, n_simu, base);
 
 		// --- MC Terminal with Control Variate variance reduction
@@ -215,7 +228,7 @@ int main()
 
 		// --- MC Terminal with antithetic and quasi random numbers variance reduction
 
-		StocksFullPath* stocksF5 = new StocksAntitheticFullPath(norm_quasi, 100, mu, 1, 12, antithetic_function);
+		StocksFullPath* stocksF5 = new StocksAntitheticFullPath(norm_quasi_sob, 100, mu, 1, 12, antithetic_function);
 		MonteCarlo* mc_solver_quasi_anti_fp = new MonteCarloLSM(stocksF5, call_payoff_PD, llong(n_simu / 2), base);
 
 		// --- MC Terminal with Antithetic and Control Variate variance reduction
@@ -225,12 +238,12 @@ int main()
 
 		// --- MC Terminal  with Quasi random numbers and Control Variate variance reduction
 
-		StocksFullPath* stocksF7 = new StocksStandardFullPath(norm_quasi, 100, mu, 1, 12);
+		StocksFullPath* stocksF7 = new StocksStandardFullPath(norm_quasi_sob, 100, mu, 1, 12);
 		MonteCarlo* mc_solver_quasi_CV_fp = new MonteCarloLSM(stocksF7, call_payoff_PD, n_simu, base, Call_classic, prix_bs);
 
 		// --- MC Terminal  with Quasi random numbers anthitetic and Control Variate variance reduction
 
-		StocksFullPath* stocksF8 = new StocksAntitheticFullPath(norm_quasi, 100, mu, 1, 12, antithetic_function);
+		StocksFullPath* stocksF8 = new StocksAntitheticFullPath(norm_quasi_sob, 100, mu, 1, 12, antithetic_function);
 		MonteCarlo* mc_simul_quasi_anti_CV_fp = new MonteCarloLSM(stocksF8, call_payoff_PD, llong(n_simu / 2), base, Call_classic, prix_bs);
 
 
@@ -243,8 +256,27 @@ int main()
 		Simulation* MC_simul_quasi_cv_fp = new Simulation(mc_solver_quasi_CV_fp);
 		Simulation* MC_simul_quasi_anti_CV_fp = new Simulation(mc_simul_quasi_anti_CV_fp);
 
+		mc_solver_fp->Solve();
+		std::cout << "Standard : "<< mc_solver_fp->get_price()<<std::endl;
+		mc_solver_antithetic_fp->Solve();
+		std::cout << "Antitethic : "<< mc_solver_antithetic_fp->get_price()<<std::endl;
+		mc_solver_quasi_fp->Solve();
+		std::cout << "Quasi : "<< mc_solver_quasi_fp->get_price()<<std::endl;
+		mc_solver_CV_fp->Solve();
+		std::cout << "Control Variate : "<< mc_solver_CV_fp->get_price()<<std::endl;
+		mc_solver_quasi_anti_fp->Solve();
+		std::cout << "Anti + Quasi : "<< mc_solver_quasi_anti_fp->get_price()<<std::endl;
+		mc_solver_anti_CV_fp->Solve();
+		std::cout << "Anti + CV : "<< mc_solver_anti_CV_fp->get_price()<<std::endl;
+		mc_solver_quasi_CV_fp->Solve();
+		std::cout << "Quasi + CV : "<< mc_solver_quasi_CV_fp->get_price()<<std::endl;
+		mc_simul_quasi_anti_CV_fp->Solve();
+		std::cout << "Quasi + CV + anti : "<< mc_simul_quasi_anti_CV_fp->get_price()<<std::endl;
 
-		if (true) {
+		
+
+		
+		if (false) {
 			MC_simul_fp->variance_by_sims(n_sims_var, n_sims_std, "..\\Graphs\\Variance-BasketCall-LSM\\var_MC_simul_standard.csv");
 			MC_simul_antithetic_fp->variance_by_sims(n_sims_var, n_sims_anti, "..\\Graphs\\Variance-BasketCall-LSM\\var_MC_anti.csv");
 			MC_simul_quasi_fp->variance_by_sims(n_sims_var, n_sims_std, "..\\Graphs\\Variance-BasketCall-LSM\\var_MC_simul_quasi.csv");
@@ -272,6 +304,14 @@ int main()
 			
 			mc_solver_CV_fp_test->Solve();
 			std::cout << mc_solver_CV_fp_test->get_price() << std::endl;
+			
+		}
+		
+		if (true)
+		{
+			
+			UniformGenerator* sob = new Sobol(1);
+			sob->export_csv(1000, "Sobol.csv");
 			
 		}
 	}
