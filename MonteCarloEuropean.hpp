@@ -1,6 +1,11 @@
 #pragma once
 #include "MonteCarlo.hpp"
 
+// This class can price payoffs with exercise at maturity only
+
+// INPUTS : Terminal value assets and non path dependent payoff with llong n simulations
+//			Full path value assets and path dependent payoff with llong n simulations
+
 class MonteCarloEuropean : public MonteCarlo
 {
 public:

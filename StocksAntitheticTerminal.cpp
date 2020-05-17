@@ -12,9 +12,9 @@ std::vector<std::vector<std::vector<double>>> StocksAntitheticTerminal::Generate
 	W_transform.resize(n_sims, std::vector<double>(Gen->get_covariance_matrix().size()));
 
 	Gen->Generate(W, n_sims);
-	(*Transform)(W_transform, W, 0, 1);
+	(*Transform)(W_transform, W, 0, 1); // Apply the antithetic transformation to W.
 
-	S.resize(n_sims*2, std::vector<std::vector<double>>(W[0].size(), std::vector<double>(1)));
+	S.resize(n_sims*2, std::vector<std::vector<double>>(W[0].size(), std::vector<double>(1))); // Return 2*n_sims simulations because of the antithetic transformation.
 
 	llong cpt = 0;
 

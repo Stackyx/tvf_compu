@@ -21,8 +21,6 @@ std::vector<std::vector<std::vector<double>>> StocksAntitheticFullPath::Generate
 
 	S.resize(n_sims*2, std::vector<std::vector<double>>(W[0].size(), std::vector<double>(N_steps)));
 	
-	
-
 	double dt = T / (N_steps - 1);
 	llong cpt_div = 0;
 	double divVal = 0;
@@ -40,7 +38,9 @@ std::vector<std::vector<std::vector<double>>> StocksAntitheticFullPath::Generate
 	for (llong z = 1; z < N_steps; ++z)
 	{
 		W = Gen->Generate(n_sims);
-		W_transform = (*Transform)(W, 0, 1);
+		W_transform = (*Transform)(W, 0, 1); // Apply the antithetic transformation
+
+		// This blocks handle by the exact same method the dividends payment.
 
 		if (z * dt < Date_Div[cpt_div] && Date_Div[cpt_div] <= (z + 1) * dt)
 		{

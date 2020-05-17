@@ -6,6 +6,10 @@
 #include "Tools.hpp"
 #include <typeinfo>
 
+// This class can price payoffs with american or bermudean exercise
+
+// INPUTS : Full path value assets and path dependent payoff with llong n simulations and a basis objet for the LS algorithm
+
 class MonteCarloLSM : public MonteCarlo
 {
 public:

@@ -1,6 +1,8 @@
 #pragma once
 #include "R3R1Function.hpp"
 
+// This class allows to apply the transformation needed when doing the Antithetic variance reduction method.
+
 class StandardAntithetic : public R3R1Function
 {
 public:

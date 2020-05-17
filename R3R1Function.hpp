@@ -3,6 +3,8 @@
 #include <stdexcept>
 typedef unsigned long long llong;
 
+// Abstract class that overloads the () operator to act as a function
+
 class R3R1Function
 {
 public:

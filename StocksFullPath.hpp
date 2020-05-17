@@ -2,6 +2,9 @@
 #include "Stocks.hpp"
 #include "ContinuousGenerator.hpp"
 
+// Another abstract class to generate a full path.
+// The second constructor can handle dividends payment during the life of the asset.
+
 class StocksFullPath : public Stocks
 {
 public:

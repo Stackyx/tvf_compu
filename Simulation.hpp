@@ -1,6 +1,9 @@
 #pragma once
 #include "MonteCarlo.hpp"
 
+// This class handles the simulation of a MonteCarlo class.
+// You can compute its expectation, variance, write to a file expectations/variance in function of iterations, etc.
+
 class Simulation
 {
 public:

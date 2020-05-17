@@ -1,6 +1,10 @@
 #pragma once
 #include "StocksTerminal.hpp"
 
+// This instantiable class can generate final value of assets prices.
+
+// INPUTS : Continuous random number generator, double S0, double risk free rate, double maturity
+
 class StocksStandardTerminal : public StocksTerminal
 {
 public:
