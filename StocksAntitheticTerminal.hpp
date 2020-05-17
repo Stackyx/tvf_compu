@@ -1,6 +1,11 @@
 #pragma once
 #include "StocksTerminal.hpp"
 
+
+// This instantiable class can generate final value of assets prices implementing the Antithetic variance reduction method.
+
+// INPUTS : Continuous random number generator, double S0, double risk free rate, double maturity, function to apply the antithetic transformation to the brownians
+
 class StocksAntitheticTerminal : public StocksTerminal
 {
 public:

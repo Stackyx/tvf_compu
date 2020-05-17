@@ -6,12 +6,16 @@
 #include <algorithm>
 #include <numeric>
 
+// This call allows to price any option on correlated assets. This payoff can either be path or not path dependent.
+// The payoff can also exercise at maturity only, in an american or bermudean way
+
+
 class MonteCarlo
 {
 public:
 
 	MonteCarlo(Stocks* stocks, Payoff* payoff, llong n_sims);
-	MonteCarlo(Stocks* stocks, Payoff* payoff, llong n_sims, Payoff* payoff_CV, double closedFormValue);
+	MonteCarlo(Stocks* stocks, Payoff* payoff, llong n_sims, Payoff* payoff_CV, double closedFormValue); // To use when using Control Variate.
 
 	virtual void Solve() = 0;
 	

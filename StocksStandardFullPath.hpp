@@ -1,6 +1,11 @@
 #pragma once
 #include "StocksFullPath.hpp"
 
+// Instantiable class that generate a full asset stock path price.
+
+// INPUTS : Continuous random number generator, double S0, double risk free rate, double maturity and llong number of steps
+// This class can also handle dividends payment. Input the ABSOLUTE values of the dividend payment and their dates between 0 and maturity.
+
 class StocksStandardFullPath : public StocksFullPath
 {
 public:
